@@ -47,8 +47,8 @@ echo "SHA-256 checksum: $sha256"
 cat > Formula/code-kaizen.rb <<EOF
 class CodeKaizen < Formula
   desc "A CLI utility for detecting hotspots"
-  homepage "https://github.com/<your-username>/code-kaizen"
-  url "https://github.com/<your-username>/code-kaizen/archive/$archive_name"
+  homepage "https://github.com/asafkorem/code-kaizen"
+  url "https://github.com/asafkorem/code-kaizen/archive/$archive_name"
   sha256 "$sha256"
   license "MIT"
 
@@ -62,7 +62,7 @@ EOF
 cd Formula
 git add code-kaizen.rb
 git commit -m "Update to version $new_version"
-git push origin main
+git push origin master
 
 # Notify the user of completion
 echo "Version $new_version has been tagged, released, published to npm, and the Homebrew formula updated."
