@@ -28,12 +28,12 @@ brew install code-kaizen
 ### Running Kaizen
 
 ```shell
-code-kaizen /path/to/your/repo
+kaizen /path/to/your/repo
 ```
 
 Default language is JavaScript, but you can specify a different language using the `-l` (or `--language`) flag.
 ```shell
-code-kaizen /path/to/your/repo -l python
+kaizen /path/to/your/repo -l python
 ```
 
 See all available options by running `kaizen -h`.
