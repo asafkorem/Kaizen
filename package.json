@@ -1,6 +1,6 @@
 {
   "name": "code-kaizen",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Smart hot-spots detection in codebases",
   "main": "index.js",
   "bin": {
