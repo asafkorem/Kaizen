@@ -1,4 +1,6 @@
+<center>
 <img src="logo.png" alt="Kaizen logo" width="200"/>
+</center>
 
 ## Smart hot-spots detection
 
