@@ -27,7 +27,7 @@ git commit -m "Bump version to $new_version"
 git tag -a "$new_version" -m "$release_name"
 
 # Push changes and tags to the repository
-git push origin main
+git push origin master
 git push origin "$new_version"
 
 # Publish the package to npm
