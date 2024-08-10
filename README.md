@@ -12,25 +12,31 @@ By leveraging Git history and static analysis, Kaizen provides actionable insigh
 
 ### Installation
 
-You can install Kaizen globally using npm or yarn.
+You can install Kaizen globally using npm, yarn, or Homebrew.
 
 ```shell
-npm install -g kaizen
-yarn global add kaizen
+# Using npm 
+npm install -g code-kaizen
+
+# Using yarn
+yarn global add code-kaizen
+
+# Using Homebrew
+brew install code-kaizen
 ```
 
 ### Running Kaizen
 
 ```shell
-kaizen --path /path/to/your/repo
+code-kaizen /path/to/your/repo
 ```
 
-Default language is JavaScript, but you can specify a different language using the `--language` flag.
+Default language is JavaScript, but you can specify a different language using the `-l` (or `--language`) flag.
 ```shell
-kaizen --path /path/to/your/repo --language python
+code-kaizen /path/to/your/repo -l python
 ```
 
-See all available options by running `kaizen --help`.
+See all available options by running `kaizen -h`.
 
 ## Contributing
 
