@@ -6,6 +6,6 @@ class CodeKaizen < Formula
   license "MIT"
 
   def install
-    bin.install "index.js" => "code-kaizen"
+    bin.install "dist/index.js" => "kaizen"
   end
 end

@@ -28,8 +28,10 @@ brew install asafkorem/kaizen/code-kaizen
 
 ### Running Kaizen
 
-```shell
-kaizen /path/to/your/repo
+To run Kaizen, simply provide the path to your repository and the path to the directory where you want to store the artifacts.
+
+```
+kaizen <path-to-repo> <path-to-artifacts>
 ```
 
 ## Contributing

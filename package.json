@@ -2,20 +2,30 @@
   "name": "code-kaizen",
   "version": "1.0.7",
   "description": "Smart hot-spots detection in codebases",
-  "keywords": ["code quality", "hot-spots", "continous improvement", "kaizen"],
+  "keywords": ["code analysis", "hot-spots", "repo analysis", "git", "kaizen"],
   "repository": {
     "type": "git",
     "url": "https://github.com/asafkorem/Kaizen.git"
   },
-  "main": "index.js",
+  "main": "dist/index.js",
   "bin": {
-    "kaizen": "./index.js"
+    "kaizen": "dist/index.js"
   },
   "scripts": {
-    "start": "node index.js"
+    "start": "ts-node src/index.ts",
+    "build": "tsc"
   },
-  "dependencies": {},
-  "devDependencies": {},
+  "devDependencies": {
+    "@types/node": "^16.11.12",
+    "typescript": "^4.5.3",
+    "ts-node": "^10.4.0",
+    "ts-jest": "^27.1.1"
+  },
+  "dependencies": {
+    "csv": "^6.0.5",
+    "cytoscape": "^3.21.0",
+    "commander": "^8.3.0"
+  },
   "author": "Asaf Korem",
   "license": "MIT"
 }

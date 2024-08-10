@@ -34,7 +34,7 @@ git push origin "$new_version"
 npm publish
 
 # Create the archive
-archive_name="code-kaizen-${new_version:1}.tar.gz"
+archive_name="archive/code-kaizen-${new_version:1}.tar.gz"
 git archive -o $archive_name HEAD
 
 # Calculate the SHA-256 checksum
@@ -46,14 +46,14 @@ echo "SHA-256 checksum: $sha256"
 # Create or update the Homebrew formula
 cat > Formula/code-kaizen.rb <<EOF
 class CodeKaizen < Formula
-  desc "A CLI utility for detecting hotspots"
+  desc "Smart hot-spots detection in codebases"
   homepage "https://github.com/asafkorem/code-kaizen"
   url "https://github.com/asafkorem/code-kaizen/archive/$archive_name"
   sha256 "$sha256"
   license "MIT"
 
   def install
-    bin.install "index.js" => "code-kaizen"
+    bin.install "dist/index.js" => "kaizen"
   end
 end
 EOF
