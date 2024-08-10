@@ -32,13 +32,6 @@ brew install asafkorem/kaizen/code-kaizen
 kaizen /path/to/your/repo
 ```
 
-Default language is JavaScript, but you can specify a different language using the `-l` (or `--language`) flag.
-```shell
-kaizen /path/to/your/repo -l python
-```
-
-See all available options by running `kaizen -h`.
-
 ## Contributing
 
 I like all contributions, big or small. 
