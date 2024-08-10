@@ -22,7 +22,8 @@ npm install -g code-kaizen
 yarn global add code-kaizen
 
 # Using Homebrew
-brew install code-kaizen
+brew tap asafkorem/kaizen
+brew install asafkorem/kaizen/code-kaizen
 ```
 
 ### Running Kaizen
