@@ -1,5 +1,5 @@
 <p align="center">
-<img src="logo.png" alt="Kaizen logo" width="200"/>
+<img src="https://github.com/asafkorem/Kaizen/blob/master/logo.png" alt="Kaizen logo" width="200"/>
 </p>
 
 ## Smart hot-spots detection
