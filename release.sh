@@ -37,6 +37,11 @@ npm publish
 archive_name="archive/code-kaizen-${new_version:1}.tar.gz"
 git archive -o $archive_name HEAD
 
+# Commit the archive
+git add $archive_name
+git commit -m "Add archive for version $new_version"
+git push origin master
+
 # Calculate the SHA-256 checksum
 sha256=$(shasum -a 256 $archive_name | awk '{ print $1 }')
 
