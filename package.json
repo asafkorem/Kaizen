@@ -1,8 +1,14 @@
 {
   "name": "code-kaizen",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Smart hot-spots detection in codebases",
-  "keywords": ["code analysis", "hot-spots", "repo analysis", "git", "kaizen"],
+  "keywords": [
+    "code analysis",
+    "hot-spots",
+    "repo analysis",
+    "git",
+    "kaizen"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/asafkorem/Kaizen.git"
