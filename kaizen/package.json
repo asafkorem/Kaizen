@@ -1,0 +1,16 @@
+{
+  "name": "kaizen",
+  "version": "1.0.0",
+  "description": "Smart hot-spots detection in codebases",
+  "main": "index.js",
+  "bin": {
+    "kaizen": "./index.js"
+  },
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "author": "Asaf Korem",
+  "license": "MIT"
+}
