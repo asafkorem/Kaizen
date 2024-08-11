@@ -13,7 +13,7 @@ export interface FileRelation {
 
 export interface AnalysisResult {
     fileCommits: FileCommit[];
-    fileRelations: FileRelation[];
+    commitRelations: FileRelation[];
     staticRelations: FileRelation[];
 }
 

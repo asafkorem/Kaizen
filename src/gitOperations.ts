@@ -20,7 +20,7 @@ export async function analyzeRepository(repoPath: string): Promise<AnalysisResul
 
     return {
         fileCommits,
-        fileRelations,
+        commitRelations: fileRelations,
         staticRelations
     };
 }

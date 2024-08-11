@@ -1,6 +1,6 @@
 import { analyzeRepository } from './gitOperations';
 import { generateCSVFiles } from './csvGenerator';
-import { generateDashboard } from './dashboardGenerator';
+import { generateDashboard } from './dashboard/dashboardGenerator';
 import { AnalysisResult } from './types';
 import {promises as fs} from "fs";
 import {exec} from "child_process";

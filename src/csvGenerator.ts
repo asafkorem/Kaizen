@@ -5,7 +5,7 @@ import { AnalysisResult } from './types';
 
 export async function generateCSVFiles(analysisResult: AnalysisResult, artifactsPath: string) {
     await generateFileChangesCSV(analysisResult.fileCommits, artifactsPath);
-    await generateFileRelationsCSV(analysisResult.fileRelations, artifactsPath);
+    await generateCommitRelationsCSV(analysisResult.commitRelations, artifactsPath);
     await generateStaticRelationsCSV(analysisResult.staticRelations, artifactsPath);
 }
 
@@ -25,7 +25,7 @@ async function generateFileChangesCSV(fileCommits: AnalysisResult['fileCommits']
     await fs.writeFile(path.join(artifactsPath, 'file_changes.csv'), csv);
 }
 
-async function generateFileRelationsCSV(fileRelations: AnalysisResult['fileRelations'], artifactsPath: string) {
+async function generateCommitRelationsCSV(fileRelations: AnalysisResult['commitRelations'], artifactsPath: string) {
     const csvData = fileRelations.map(fr => [fr.file1, fr.file2, fr.sharedCommits]);
 
     const csv = stringify([
@@ -33,7 +33,7 @@ async function generateFileRelationsCSV(fileRelations: AnalysisResult['fileRelat
         ...csvData
     ]);
 
-    await fs.writeFile(path.join(artifactsPath, 'file_relations.csv'), csv);
+    await fs.writeFile(path.join(artifactsPath, 'commit_relations.csv'), csv);
 }
 
 async function generateStaticRelationsCSV(staticRelations: AnalysisResult['staticRelations'], artifactsPath: string) {

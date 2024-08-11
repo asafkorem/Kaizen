@@ -1,6 +1,6 @@
 import { promises as fs } from 'fs';
 import path from 'path';
-import { AnalysisResult, CytoscapeNode, CytoscapeEdge, FileCommit } from './types';
+import { AnalysisResult, CytoscapeNode, CytoscapeEdge, FileCommit } from '../types';
 
 export async function generateDashboard(analysisResult: AnalysisResult, artifactsPath: string): Promise<string> {
     const html = generateHTML(analysisResult);
@@ -144,7 +144,7 @@ function generateJavaScript(nodes: CytoscapeNode[], edges: CytoscapeEdge[], anal
     const nodes = ${JSON.stringify(nodes)};
     const edges = ${JSON.stringify(edges)};
     const fileCommits = ${JSON.stringify(analysisResult.fileCommits)};
-    const fileRelations = ${JSON.stringify(analysisResult.fileRelations)};
+    const fileRelations = ${JSON.stringify(analysisResult.commitRelations)};
     const staticRelations = ${JSON.stringify(analysisResult.staticRelations)};
 
     function initCytoscape() {
@@ -374,9 +374,9 @@ function generateNodes(analysisResult: AnalysisResult): CytoscapeNode[] {
 }
 
 function generateEdges(analysisResult: AnalysisResult): CytoscapeEdge[] {
-    const maxSharedCommits = Math.max(...analysisResult.fileRelations.map(fr => fr.sharedCommits));
+    const maxSharedCommits = Math.max(...analysisResult.commitRelations.map(fr => fr.sharedCommits));
     return [
-        ...analysisResult.fileRelations.map(fr => ({
+        ...analysisResult.commitRelations.map(fr => ({
             data: {
                 source: fr.file1,
                 target: fr.file2,

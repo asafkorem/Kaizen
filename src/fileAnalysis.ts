@@ -11,7 +11,7 @@ export async function analyzeRepoDependencies(repoPath: string, files: string[])
     const dependencies = madgeResult.obj();
 
     let resolvedDependencies: { [key: string]: string[] } = {};
-    // for each dependency, replace the path with the most similar file name from `files`.
+    // For each dependency, replace the path with the most similar file name from `files`.
     for (const [file, deps] of Object.entries(dependencies)) {
         const resolvedFileDependencies = deps.map(dep => {
             const similarFile = files.find(f => f.includes(dep));
@@ -23,5 +23,5 @@ export async function analyzeRepoDependencies(repoPath: string, files: string[])
         resolvedDependencies[resolvedFile] = resolvedFileDependencies;
     }
 
-    return {};
+    return resolvedDependencies;
 }
