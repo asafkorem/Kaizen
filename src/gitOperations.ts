@@ -1,8 +1,7 @@
 import { exec } from 'child_process';
 import { promisify } from 'util';
-import path from 'path';
 import { AnalysisResult, FileCommit, FileRelation } from './types';
-import { analyzeFileContent } from './fileAnalysis';
+import {analyzeRepoDependencies} from './fileAnalysis';
 
 const execAsync = promisify(exec);
 
@@ -91,24 +90,17 @@ async function analyzeFileRelations(fileCommits: FileCommit[]): Promise<FileRela
 }
 
 async function analyzeStaticRelations(repoPath: string, files: string[]): Promise<FileRelation[]> {
-    const staticRelations: FileRelation[] = [];
+    // const staticRelations: FileRelation[] = [];
 
-    for (const file of files) {
-        if (file.match(/\.(js|jsx|ts|tsx)$/)) {
-            const filePath = path.join(repoPath, file);
-            console.log(`Analyzing file: ${filePath}...`);
-            const { stdout: content } = await execAsync(`git show HEAD:${file}`, { cwd: repoPath });
-            const dependencies = analyzeFileContent(content, file);
+    const jsFiles = files.filter(file => file.match(/\.(js|jsx|ts|tsx)$/));
 
-            for (const dep of dependencies) {
-                staticRelations.push({
-                    file1: file,
-                    file2: dep,
-                    sharedCommits: 0 // Not used for static relations
-                });
-            }
-        }
-    }
+    const dependencies = await analyzeRepoDependencies(repoPath, jsFiles);
 
-    return staticRelations;
+    return Object.entries(dependencies).flatMap(([file, deps]) => {
+        return deps.map(dep => ({
+            file1: file,
+            file2: dep,
+            sharedCommits: 0
+        }));
+    });
 }

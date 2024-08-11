@@ -1,51 +1,27 @@
-import * as ts from 'typescript';
+import madge from "madge";
+import * as fs from 'fs';
+import path from "path";
 
-export function analyzeFileContent(content: string, fileName: string): string[] {
-    const dependencies: string[] = [];
-    const isJSX = fileName.endsWith('.jsx') || fileName.endsWith('.tsx');
-
-    // Create a source file
-    const sourceFile = ts.createSourceFile(
-        fileName,
-        content,
-        ts.ScriptTarget.Latest,
-        true,
-        isJSX ? ts.ScriptKind.JSX : undefined
-    );
-
-    // Traverse the AST
-    function visit(node: ts.Node) {
-        if (ts.isImportDeclaration(node)) {
-            // Handle ES6 imports
-            const moduleSpecifier = node.moduleSpecifier;
-            if (ts.isStringLiteral(moduleSpecifier)) {
-                dependencies.push(moduleSpecifier.text);
-            }
-        } else if (ts.isCallExpression(node) &&
-            (node.expression.getText() === 'require' ||
-                node.expression.getText() === 'import')) {
-            // Handle CommonJS require and dynamic imports
-            const argument = node.arguments[0];
-            if (ts.isStringLiteral(argument)) {
-                dependencies.push(argument.text);
-            }
-        } else if (ts.isPropertyAccessExpression(node) &&
-            node.expression.getText() === 'require' &&
-            node.name.getText() === 'resolve') {
-            // Handle require.resolve
-            if (node.parent && ts.isCallExpression(node.parent)) {
-                const argument = node.parent.arguments[0];
-                if (ts.isStringLiteral(argument)) {
-                    dependencies.push(argument.text);
-                }
-            }
-        }
-
-        ts.forEachChild(node, visit);
+export async function analyzeRepoDependencies(repoPath: string, files: string[]): Promise<{ [key: string]: string[] }> {
+    if (!fs.existsSync(repoPath)) {
+        throw new Error(`Path not found: ${repoPath}`);
     }
 
-    visit(sourceFile);
+    const madgeResult = await madge(files.map(file => path.join(repoPath, file)));
+    const dependencies = madgeResult.obj();
 
-    // Remove duplicates
-    return Array.from(new Set(dependencies));
+    let resolvedDependencies: { [key: string]: string[] } = {};
+    // for each dependency, replace the path with the most similar file name from `files`.
+    for (const [file, deps] of Object.entries(dependencies)) {
+        const resolvedFileDependencies = deps.map(dep => {
+            const similarFile = files.find(f => f.includes(dep));
+            return similarFile || dep;
+        });
+
+        const resolvedFile: string = files.find(f => f.includes(file)) || file;
+
+        resolvedDependencies[resolvedFile] = resolvedFileDependencies;
+    }
+
+    return {};
 }

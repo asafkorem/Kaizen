@@ -26,6 +26,10 @@ brew tap asafkorem/kaizen
 brew install asafkorem/kaizen/code-kaizen
 ```
 
+### Project Requirements
+
+- Kaizen works only with node.js projects that use Git for version control.
+
 ### Running Kaizen
 
 To run Kaizen, simply provide the path to your repository and the path to the directory where you want to store the artifacts.
