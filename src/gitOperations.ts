@@ -12,15 +12,18 @@ export async function analyzeRepository(repoPath: string): Promise<AnalysisResul
         throw new Error(`${repoPath} is not a valid Git repository.`);
     }
 
-    // const mainBranch = await getMainBranch(repoPath);
+    // TODO: Consider using the main branch instead of the current branch (`git rev-parse --abbrev-ref HEAD`).
+
     const files = await getRepositoryFiles(repoPath);
+    const filteredFiles = files.filter(file => !file.includes('node_modules'));
+
     const fileCommits = await analyzeFileCommits(repoPath, files);
-    const fileRelations = await analyzeFileRelations(fileCommits);
+    const commitRelations = await analyzeCommitRelations(fileCommits);
     const staticRelations = await analyzeStaticRelations(repoPath, files);
 
     return {
         fileCommits,
-        commitRelations: fileRelations,
+        commitRelations,
         staticRelations
     };
 }
@@ -34,14 +37,14 @@ async function checkIsRepo(repoPath: string): Promise<boolean> {
     }
 }
 
-async function getMainBranch(repoPath: string): Promise<string> {
-    const { stdout } = await execAsync('git rev-parse --abbrev-ref HEAD', { cwd: repoPath });
-    return stdout.trim();
-}
-
 async function getRepositoryFiles(repoPath: string): Promise<string[]> {
     const { stdout } = await execAsync('git ls-files', { cwd: repoPath });
     return stdout.split('\n').filter(Boolean);
+}
+
+function filterFiles(files: string[]): string[] {
+    // Filter out non-code files
+    return files.filter(file => file.match(/\.(js|jsx|ts|tsx)$/));
 }
 
 async function analyzeFileCommits(repoPath: string, files: string[]): Promise<FileCommit[]> {
@@ -71,7 +74,7 @@ async function analyzeFileCommits(repoPath: string, files: string[]): Promise<Fi
     return fileCommits;
 }
 
-async function analyzeFileRelations(fileCommits: FileCommit[]): Promise<FileRelation[]> {
+async function analyzeCommitRelations(fileCommits: FileCommit[]): Promise<FileRelation[]> {
     const relations: Map<string, number> = new Map();
 
     for (const commit of fileCommits) {
@@ -90,8 +93,6 @@ async function analyzeFileRelations(fileCommits: FileCommit[]): Promise<FileRela
 }
 
 async function analyzeStaticRelations(repoPath: string, files: string[]): Promise<FileRelation[]> {
-    // const staticRelations: FileRelation[] = [];
-
     const jsFiles = files.filter(file => file.match(/\.(js|jsx|ts|tsx)$/));
 
     const dependencies = await analyzeRepoDependencies(repoPath, jsFiles);
@@ -100,7 +101,6 @@ async function analyzeStaticRelations(repoPath: string, files: string[]): Promis
         return deps.map(dep => ({
             file1: file,
             file2: dep,
-            sharedCommits: 0
         }));
     });
 }

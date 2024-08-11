@@ -374,13 +374,13 @@ function generateNodes(analysisResult: AnalysisResult): CytoscapeNode[] {
 }
 
 function generateEdges(analysisResult: AnalysisResult): CytoscapeEdge[] {
-    const maxSharedCommits = Math.max(...analysisResult.commitRelations.map(fr => fr.sharedCommits));
+    const maxSharedCommits = Math.max(...analysisResult.commitRelations.map(fr => fr.sharedCommits || 0));
     return [
         ...analysisResult.commitRelations.map(fr => ({
             data: {
                 source: fr.file1,
                 target: fr.file2,
-                weight: 1 + (fr.sharedCommits / maxSharedCommits) * 5
+                weight: 1 + ((fr.sharedCommits || 0) / maxSharedCommits) * 5
             }
         })),
         ...analysisResult.staticRelations.map(sr => ({

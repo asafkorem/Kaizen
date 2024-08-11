@@ -8,7 +8,7 @@ export interface FileCommit {
 export interface FileRelation {
     file1: string;
     file2: string;
-    sharedCommits: number;
+    sharedCommits?: number;
 }
 
 export interface AnalysisResult {
