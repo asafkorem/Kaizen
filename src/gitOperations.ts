@@ -15,11 +15,11 @@ export async function analyzeRepository(repoPath: string): Promise<AnalysisResul
     // TODO: Consider using the main branch instead of the current branch (`git rev-parse --abbrev-ref HEAD`).
 
     const files = await getRepositoryFiles(repoPath);
-    const filteredFiles = files.filter(file => !file.includes('node_modules'));
+    const filteredFiles = filterFiles(files);
 
-    const fileCommits = await analyzeFileCommits(repoPath, files);
+    const fileCommits = await analyzeFileCommits(repoPath, filteredFiles);
     const commitRelations = await analyzeCommitRelations(fileCommits);
-    const staticRelations = await analyzeStaticRelations(repoPath, files);
+    const staticRelations = await analyzeStaticRelations(repoPath, filteredFiles);
 
     return {
         fileCommits,
@@ -43,8 +43,7 @@ async function getRepositoryFiles(repoPath: string): Promise<string[]> {
 }
 
 function filterFiles(files: string[]): string[] {
-    // Filter out non-code files
-    return files.filter(file => file.match(/\.(js|jsx|ts|tsx)$/));
+    return files.filter(file => file.match(/\.(js|jsx|ts|tsx|css|scss|sass|less)$/));
 }
 
 async function analyzeFileCommits(repoPath: string, files: string[]): Promise<FileCommit[]> {

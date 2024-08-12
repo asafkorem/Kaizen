@@ -14,21 +14,28 @@ By leveraging Git history and static analysis, Kaizen provides actionable insigh
 
 You can install Kaizen globally using npm, yarn, or Homebrew.
 
+#### Using npm
+
 ```shell
-# Using npm 
 npm install -g code-kaizen
+```
 
-# Using yarn
+#### Using yarn
+
+```shell
 yarn global add code-kaizen
+```
 
-# Using Homebrew
+#### Using Homebrew
+
+```shell
 brew tap asafkorem/kaizen
 brew install asafkorem/kaizen/code-kaizen
 ```
 
 ### Project Requirements
 
-- Kaizen works only with node.js projects that use Git for version control.
+Kaizen works only with Node.js projects that use Git for version control.
 
 ### Running Kaizen
 
@@ -38,9 +45,12 @@ To run Kaizen, simply provide the path to your repository and the path to the di
 kaizen <path-to-repo> <path-to-artifacts>
 ```
 
+- Default path to the repository is the current working directory.
+- Default output is 'kaizen' directory in the current working directory.
+
 ## Contributing
 
 I like all contributions, big or small. 
 
 If you have a feature request, bug report, or patch, feel free to open an issue or a pull request.
-You can also find me on [Kaizen's server on Discord](https://discord.gg/EWfmnnfb5T).
+You can also find me on [Kaizen's server on Discord](https://discord.gg/EWfmnnfb5T) or at `asafk@wix.com`.

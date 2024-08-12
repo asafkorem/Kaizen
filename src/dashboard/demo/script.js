@@ -76,7 +76,7 @@ const staticRelations = [
   { dependentFile: "src/hooks/useCalculator.js", dependencyFile: "src/redux/actions/calculatorActions.js" },
   { dependentFile: "src/hooks/useCalculator.js", dependencyFile: "src/redux/selectors/calculatorSelectors.js" },
   { dependentFile: "src/redux/actions/calculatorActions.js", dependencyFile: "src/constants/actionTypes.js" },
-  { dependentFile: "src/redux/reducers/calculatorReducer.js", dependencyFile: "src/constants/actionTypes.js" },
+  { dependentFile: "src/redux/reducers/calculat∂orReducer.js", dependencyFile: "src/constants/actionTypes.js" },
   { dependentFile: "src/redux/reducers/calculatorReducer.js", dependencyFile: "src/redux/reducers/reducerHelpers.js" },
   { dependentFile: "src/redux/selectors/calculatorSelectors.js", dependencyFile: "src/redux/reducers/index.js" },
   { dependentFile: "src/redux/store.js", dependencyFile: "src/redux/reducers/index.js" },
