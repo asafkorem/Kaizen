@@ -19,11 +19,13 @@
   },
   "scripts": {
     "start": "ts-node src/index.ts",
-    "build": "tsc"
+    "build": "tsc && npm run copy-files",
+    "copy-files": "copyfiles -u 1 src/**/*.{csv,html,css,js} dist/"
   },
   "devDependencies": {
     "@types/madge": "^5.0.3",
     "@types/node": "^16.11.12",
+    "copyfiles": "^2.4.1",
     "ts-jest": "^27.1.1",
     "ts-node": "^10.4.0",
     "typescript": "^4.5.3"
