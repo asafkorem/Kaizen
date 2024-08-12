@@ -19,10 +19,6 @@ echo "Current version: $current_version"
 echo "Building the dist files"
 npm run build
 
-# Commit the dist files
-git add dist
-git commit -m "build: create dist files for version $current_version"
-
 # Bump the version using npm version and semver
 new_version=$(npm version $bump_type --no-git-tag-version)
 
