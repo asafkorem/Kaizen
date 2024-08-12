@@ -4,14 +4,24 @@
 set -e
 
 # Get the version bump type from the user
-echo "Enter the type of version bump (patch, minor, major):"
+echo "Enter the type of version bump (patch, minor, major), leave blank for patch:"
 read bump_type
-echo "Enter the release name (e.g., 'Bug fixes and improvements'):"
-read release_name
+
+# Use default bump type if none provided
+if [ -z "$bump_type" ]; then
+  bump_type="patch"
+fi
 
 # Extract the current version from package.json
 current_version=$(node -p "require('./package.json').version")
 echo "Current version: $current_version"
+
+echo "Building the dist files"
+npm run build
+
+# Commit the dist files
+git add dist
+git commit -m "build: create dist files for version $current_version"
 
 # Bump the version using npm version and semver
 new_version=$(npm version $bump_type --no-git-tag-version)
@@ -24,7 +34,7 @@ git add package.json
 git commit -m "Bump version to $new_version"
 
 # Tag the release
-git tag -a "$new_version" -m "$release_name"
+git tag -a "$new_version" -m "Release $new_version"
 
 # Push changes and tags to the repository
 git push origin master
