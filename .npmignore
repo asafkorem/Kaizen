@@ -1,6 +1,12 @@
 # Ignore everything
 *
 
-# Except these files/folders
+# Un-ignore dist directory and its contents
 !dist/
+!dist/**
+
+# Un-ignore specific files
 !package.json
+!README.md
+!LICENSE
+!logo.png
