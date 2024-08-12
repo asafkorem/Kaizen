@@ -1,6 +1,6 @@
 {
   "name": "code-kaizen",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "Smart hot-spots detection in codebases",
   "keywords": [
     "code analysis",
