@@ -91,6 +91,8 @@ const staticRelations = [
   { dependentFile: "tests/integration/Calculator.test.js", dependencyFile: "src/services/calculatorService.js" }
 ];
 
+/* DO NOT REMOVE THIS */
+
 function initDashboard() {
   initCytoscape();
   createCommitTypesChart();
