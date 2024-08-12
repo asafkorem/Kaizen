@@ -63,8 +63,12 @@ async function analyzeFileCommits(repoPath: string, files: string[]): Promise<Fi
             commit.message.toLowerCase().includes('enhancement')
         );
 
+        const { stdout: linesOfCodeString } = await execAsync(`git show HEAD:"${file}" | wc -l`, { cwd: repoPath });
+        const linesOfCode = parseInt(linesOfCodeString, 10);
+
         fileCommits.push({
             fileName: file,
+            linesOfCode,
             totalCommits: commits.length,
             fixCommits: fixCommits.length,
             enhancementCommits: enhancementCommits.length

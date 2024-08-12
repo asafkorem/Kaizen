@@ -1,6 +1,7 @@
 export interface FileCommit {
     fileName: string;
     totalCommits: number;
+    linesOfCode: number;
     fixCommits: number;
     enhancementCommits: number;
 }

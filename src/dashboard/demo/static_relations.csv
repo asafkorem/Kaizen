@@ -1,0 +1,24 @@
+Dependent File,Dependency File
+src/index.js,src/App.jsx
+src/index.js,src/redux/store.js
+src/App.jsx,src/components/Calculator/Calculator.jsx
+src/components/Calculator/Calculator.jsx,src/components/Display/Display.jsx
+src/components/Calculator/Calculator.jsx,src/components/Keypad/Keypad.jsx
+src/components/Calculator/Calculator.jsx,src/hooks/useCalculator.js
+src/components/Calculator/Calculator.jsx,src/config/featureToggles.js
+src/hooks/useCalculator.js,src/redux/actions/calculatorActions.js
+src/hooks/useCalculator.js,src/redux/selectors/calculatorSelectors.js
+src/redux/actions/calculatorActions.js,src/constants/actionTypes.js
+src/redux/reducers/calculatorReducer.js,src/constants/actionTypes.js
+src/redux/reducers/calculatorReducer.js,src/redux/reducers/reducerHelpers.js
+src/redux/selectors/calculatorSelectors.js,src/redux/reducers/index.js
+src/redux/store.js,src/redux/reducers/index.js
+src/redux/reducers/index.js,src/redux/reducers/calculatorReducer.js
+src/components/Display/Display.jsx,src/utils/formatters.js
+src/components/Keypad/Keypad.jsx,src/utils/mathOperations.js
+src/services/calculatorService.js,src/utils/mathOperations.js
+src/services/calculatorService.js,src/constants/mathConstants.js
+src/utils/mathOperations.js,src/constants/mathConstants.js
+tests/unit/mathOperations.test.js,src/utils/mathOperations.js
+tests/integration/Calculator.test.js,src/components/Calculator/Calculator.jsx
+tests/integration/Calculator.test.js,src/services/calculatorService.js

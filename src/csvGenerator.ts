@@ -12,13 +12,14 @@ export async function generateCSVFiles(analysisResult: AnalysisResult, artifacts
 async function generateFileChangesCSV(fileCommits: AnalysisResult['fileCommits'], artifactsPath: string) {
     const csvData = fileCommits.map(fc => [
         fc.fileName,
+        fc.linesOfCode,
         fc.totalCommits,
         fc.fixCommits,
         fc.enhancementCommits
     ]);
 
     const csv = stringify([
-        ['File Name', 'Total Commits', 'Fix Commits', 'Enhancement Commits'],
+        ['File Name', 'Lines of Code', 'Total Commits', 'Fix Commits', 'Enhancement Commits'],
         ...csvData
     ]);
 

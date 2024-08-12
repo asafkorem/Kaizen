@@ -1,0 +1,26 @@
+File 1,File 2,Shared Commits
+src/components/Calculator/Calculator.jsx,src/components/Calculator/Calculator.module.css,25
+src/components/Calculator/Calculator.jsx,src/components/Display/Display.jsx,18
+src/components/Calculator/Calculator.jsx,src/components/Keypad/Keypad.jsx,22
+src/components/Calculator/Calculator.jsx,src/redux/actions/calculatorActions.js,15
+src/components/Calculator/Calculator.jsx,src/redux/reducers/calculatorReducer.js,20
+src/components/Display/Display.jsx,src/components/Display/Display.module.css,15
+src/components/Display/Display.jsx,src/utils/formatters.js,10
+src/components/Keypad/Keypad.jsx,src/components/Keypad/Keypad.module.css,20
+src/components/Keypad/Keypad.jsx,src/utils/mathOperations.js,25
+src/redux/actions/calculatorActions.js,src/redux/reducers/calculatorReducer.js,30
+src/redux/actions/calculatorActions.js,src/constants/actionTypes.js,15
+src/redux/reducers/calculatorReducer.js,src/redux/reducers/reducerHelpers.js,18
+src/redux/reducers/calculatorReducer.js,src/redux/selectors/calculatorSelectors.js,12
+src/utils/mathOperations.js,src/services/calculatorService.js,35
+src/utils/mathOperations.js,tests/unit/mathOperations.test.js,40
+src/hooks/useCalculator.js,src/components/Calculator/Calculator.jsx,22
+src/hooks/useCalculator.js,src/redux/actions/calculatorActions.js,18
+src/services/calculatorService.js,tests/integration/Calculator.test.js,30
+src/config/featureToggles.js,src/components/Calculator/Calculator.jsx,10
+src/config/appConfig.js,src/index.js,8
+package.json,src/index.js,12
+README.md,package.json,15
+.eslintrc.js,src/index.js,5
+jest.config.js,tests/unit/mathOperations.test.js,8
+babel.config.js,src/index.js,6
