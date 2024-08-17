@@ -19,6 +19,7 @@
   },
   "scripts": {
     "start": "ts-node src/index.ts",
+    "start-and-update": "ts-node src/index.ts \"\" src/dashboard/demo && mv src/dashboard/demo/dashboard/* src/dashboard/demo && rm -rf src/dashboard/demo/dashboard && rm src/dashboard/demo/*.csv",
     "build": "tsc",
     "train": "ts-node src/model/dev/trainModel.ts"
   },
