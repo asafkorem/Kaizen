@@ -40,7 +40,7 @@ async function classifyCommits(commits: { hash: string; message: string }[]): Pr
     const commitTypes = await Promise.all(commits.map(c => classifyCommit(c.message)));
     const fixCommits = commitTypes.filter(ct => ct.categories.includes('fix')).length;
     const featCommits = commitTypes.filter(ct => ct.categories.includes('feature')).length;
-    const otherCommits = commitTypes.filter(ct => ct.categories.includes('others') || ct.categories.length == 0).length
+    const otherCommits = commitTypes.filter(ct => ct.categories.includes('others') || ct.categories.includes('None')).length
 
     return { fixCommits, featCommits, otherCommits };
 }
