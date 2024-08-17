@@ -39,10 +39,13 @@ async function classifyCommits(commits) {
 
 async function getCommitAuthors(repoPath, file) {
   const { stdout } = await execAsync(`git log --follow --format="%aN" -- "${file}" | sort | uniq -c | sort -rn`, { cwd: repoPath });
-  return stdout.trim().split('\n').map(line => {
-    const [count, ...nameParts] = line.trim().split(' ');
-    return { name: nameParts.join(' '), count: parseInt(count, 10) };
-  });
+  return stdout
+      .trim().split('\n')
+      .map(line => {
+        const [count, ...nameParts] = line.trim().split(' ');
+        return { name: nameParts.join(' '), count: parseInt(count, 10) };
+      })
+      .sort((a, b) => b.count - a.count);
 }
 
 async function processFiles() {

@@ -4,6 +4,7 @@ import { promises as fs } from "fs";
 import { generateJSONFiles } from "./jsonGenerator";
 import { generateDashboard } from "./dashboard/dashboardGenerator";
 import { exec } from "child_process";
+import {generateCSVFiles} from "./csvGenerator";
 
 const colors = {
     green: "\x1b[32m",
@@ -42,7 +43,7 @@ export async function runAnalysis(repoPath: string, artifactsPath: string) {
 
         console.log(`Artifacts will be stored in: ${artifactsPath}`);
         await fs.mkdir(artifactsPath, { recursive: true });
-        await generateJSONFiles(analysisResult, artifactsPath);
+        await generateCSVFiles(analysisResult, artifactsPath);
 
         const dashboardPath = await generateDashboard(analysisResult, artifactsPath);
 

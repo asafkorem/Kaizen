@@ -5,15 +5,19 @@ import { AnalysisResult, CytoscapeNode, CytoscapeEdge, FileCommit } from '../typ
 export async function generateDashboard(analysisResult: AnalysisResult, artifactsPath: string): Promise<string> {
     const templateDirPath = path.join(__dirname, 'demo');
 
-    const dashboardPath = path.join(artifactsPath, 'index.html');
+    const dashboardDirPath = path.join(artifactsPath, 'dashboard');
+    
+    await fs.mkdir(dashboardDirPath, { recursive: true });
+
+    const dashboardPath = path.join(dashboardDirPath, 'index.html');
     await fs.copyFile(path.join(templateDirPath, 'index.html'), dashboardPath);
 
-    await fs.copyFile(path.join(templateDirPath, 'styles.css'), path.join(artifactsPath, 'styles.css'));
+    await fs.copyFile(path.join(templateDirPath, 'styles.css'), path.join(dashboardDirPath, 'styles.css'));
 
     await changeAnalysisResultsAndCopyJSTemplate(
         analysisResult,
         path.join(templateDirPath, 'script.js'),
-        path.join(artifactsPath, 'script.js')
+        path.join(dashboardDirPath, 'script.js')
     );
 
     return dashboardPath;
