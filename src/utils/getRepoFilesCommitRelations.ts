@@ -1,27 +1,49 @@
+import { Worker } from 'worker_threads';
+import os from 'os';
+import path from 'path';
 import { FileRelation } from '../types';
-import { exec } from 'child_process';
-import { promisify } from 'util';
-
-const execAsync = promisify(exec);
 
 export async function getRepoFilesCommitRelations(repoPath: string, files: string[]): Promise<FileRelation[]> {
-    const commitMap = new Map<string, Set<string>>();
+    const numWorkers = os.cpus().length;
+    const chunkSize = Math.ceil(files.length / numWorkers);
+    const chunks: string[][] = [];
 
-    for (const file of files) {
-        const { stdout } = await execAsync(`git log --format="%H" -- "${file}"`, { cwd: repoPath });
-        const commits = stdout.split('\n').filter(Boolean);
-
-        for (const commit of commits) {
-            if (!commitMap.has(commit)) {
-                commitMap.set(commit, new Set());
-            }
-            commitMap.get(commit)!.add(file);
-        }
+    for (let i = 0; i < files.length; i += chunkSize) {
+        chunks.push(files.slice(i, i + chunkSize));
     }
+
+    const sharedCommitMap = new Map<string, Set<string>>();
+
+    const workers = chunks.map(chunk =>
+        new Promise<void>((resolve, reject) => {
+            const worker = new Worker(path.join(__dirname, 'commitRelationsWorker.js'), {
+                workerData: { repoPath, files: chunk }
+            });
+            worker.on('message', (message) => {
+                if (message.type === 'update') {
+                    const { commit, files } = message.data;
+                    if (!sharedCommitMap.has(commit)) {
+                        sharedCommitMap.set(commit, new Set());
+                    }
+                    for (const file of files) {
+                        sharedCommitMap.get(commit)!.add(file);
+                    }
+                } else if (message.type === 'done') {
+                    resolve();
+                }
+            });
+            worker.on('error', reject);
+            worker.on('exit', (code) => {
+                if (code !== 0) reject(new Error(`Worker stopped with exit code ${code}`));
+            });
+        })
+    );
+
+    await Promise.all(workers);
 
     const relations = new Map<string, number>();
 
-    for (const files of commitMap.values()) {
+    for (const files of sharedCommitMap.values()) {
         const fileArray = Array.from(files);
         for (let i = 0; i < fileArray.length; i++) {
             for (let j = i + 1; j < fileArray.length; j++) {
