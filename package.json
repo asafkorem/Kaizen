@@ -1,6 +1,6 @@
 {
   "name": "code-kaizen",
-  "version": "1.1.6",
+  "version": "1.1.7",
   "description": "Smart hot-spots detection in codebases",
   "keywords": [
     "code analysis",
@@ -21,6 +21,7 @@
     "start": "ts-node src/index.ts",
     "start-and-update": "ts-node src/index.ts \"\" src/dashboard/demo && mv src/dashboard/demo/dashboard/* src/dashboard/demo && rm -rf src/dashboard/demo/dashboard && rm src/dashboard/demo/*.csv",
     "build": "tsc",
+    "release": "./release.sh",
     "train": "ts-node src/model/dev/trainModel.ts"
   },
   "devDependencies": {
