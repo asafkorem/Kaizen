@@ -19,7 +19,7 @@
   },
   "scripts": {
     "start": "ts-node src/index.ts",
-    "copy-files": "copyfiles -u 1 src/**/*.{csv,html,css,js} dist/",
+    "copy-files": "copyfiles -u 1 src/**/*.{csv,html,css,js,nlp} dist/",
     "start-and-update": "ts-node src/index.ts \"\" src/dashboard/demo && mv src/dashboard/demo/dashboard/* src/dashboard/demo && rm -rf src/dashboard/demo/dashboard && rm src/dashboard/demo/*.csv",
     "build": "tsc & npm run copy-files",
     "release": "npm run build && ./release.sh",
