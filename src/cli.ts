@@ -2,6 +2,8 @@ import { analyzeRepository } from './analyzeRepository';
 import { AnalysisResult } from './types';
 import { promises as fs } from "fs";
 import { generateJSONFiles } from "./jsonGenerator";
+import { generateDashboard } from "./dashboard/dashboardGenerator";
+import { exec } from "child_process";
 
 const colors = {
     green: "\x1b[32m",
@@ -42,7 +44,10 @@ export async function runAnalysis(repoPath: string, artifactsPath: string) {
         await fs.mkdir(artifactsPath, { recursive: true });
         await generateJSONFiles(analysisResult, artifactsPath);
 
-        // TODO: load dashboard and open it in the browser
+        const dashboardPath = await generateDashboard(analysisResult, artifactsPath);
+
+        exec(`open ${dashboardPath}`);
+        console.log(`Opening dashboard in browser: ${dashboardPath}`);
     } catch (error) {
         console.error(error);
         process.exit(1);

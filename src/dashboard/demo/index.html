@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kaizen Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.21.0/cytoscape.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <script src="script.js"></script>
+</head>
+<body>
+<div class="container">
+    <h1>Kaizen Dashboard</h1>
+
+    <h2>Code Relationship Network</h2>
+    <div id="cy"></div>
+
+    <h2>Code Analytics</h2>
+    <div class="chart-container">
+        <div class="chart">
+            <canvas id="commitTypesChart"></canvas>
+        </div>
+        <div class="chart">
+            <canvas id="topChangedFilesChart"></canvas>
+        </div>
+    </div>
+
+    <h2>Most Frequently Changed Files</h2>
+    <div class="table-container">
+        <input type="text" id="fileSearchBox" placeholder="Search for files...">
+        <table id="frequentlyChangedFiles"></table>
+    </div>
+
+    <h2>Files with Most Imports/Dependents</h2>
+    <div class="table-container">
+        <table id="mostImportsDependents"></table>
+    </div>
+
+    <h2>Most Coupled Files</h2>
+    <div class="table-container">
+        <table id="mostCoupledFiles"></table>
+    </div>
+</div>
+
+<div id="errorMessage"></div>
+
+</body>
+</html>

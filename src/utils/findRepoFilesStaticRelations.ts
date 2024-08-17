@@ -7,7 +7,13 @@ export async function findRepoFilesStaticRelations(repoPath: string, files: stri
     for (const file of files) {
         const driver = getDriverForFile(file);
         if (driver) {
-            const fileRelations = await driver.getStaticRelations(repoPath, file);
+            let fileRelations = await driver.getStaticRelations(repoPath, file);
+
+            // filter out relations that are not in the files list
+            fileRelations = fileRelations.filter(
+                ({ file1, file2 }) => files.includes(file1) && files.includes(file2)
+            );
+
             relations.push(...fileRelations);
         }
     }
