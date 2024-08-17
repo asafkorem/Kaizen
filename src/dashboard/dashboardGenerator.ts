@@ -35,9 +35,8 @@ async function changeAnalysisResultsAndCopyJSTemplate(
 const commitRelations = ${JSON.stringify(analysisResult.commitRelations)};
 const staticRelations = ${JSON.stringify(staticRelations)};`
 
-    const endOfPlaceholder = '/* DO NOT REMOVE THIS */';
-    const endOfPlaceholderIndex = scriptContent.indexOf(endOfPlaceholder) + endOfPlaceholder.length;
-    const newScriptContent = newScriptTop + scriptContent.slice(endOfPlaceholderIndex);
+    const startOfPlaceholderIndex = scriptContent.indexOf('\n\n/* DO NOT REMOVE THIS */');
+    const newScriptContent = newScriptTop + scriptContent.slice(startOfPlaceholderIndex);
 
     await fs.writeFile(targetScriptPath, newScriptContent);
 }

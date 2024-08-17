@@ -33,6 +33,7 @@
   "dependencies": {
     "commander": "^8.3.0",
     "cytoscape": "^3.21.0",
+    "istextorbinary": "^9.5.0",
     "madge": "^8.0.0",
     "node-nlp": "^4.27.0"
   },
