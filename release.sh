@@ -40,7 +40,7 @@ git push origin "$new_version"
 npm publish
 
 # Remove old archive
-rm -rf archive
+rm -rf archive/code-kaizen-*.tar.gz
 
 # Create the archive
 archive_name="archive/code-kaizen-${new_version:1}.tar.gz"
