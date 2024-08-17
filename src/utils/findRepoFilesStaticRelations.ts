@@ -1,5 +1,5 @@
 import { FileRelation } from '../types';
-import { getDriverForFile } from '../static-relations-drivers/driverRegistry';
+import { getDriverForFile } from '../drivers/driverRegistry';
 
 export async function findRepoFilesStaticRelations(repoPath: string, files: string[]): Promise<FileRelation[]> {
     const relations: FileRelation[] = [];
