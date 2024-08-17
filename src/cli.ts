@@ -1,4 +1,4 @@
-import { analyzeRepository } from './gitOperations';
+import { analyzeRepository } from './analyzeRepository';
 import { generateCSVFiles } from './csvGenerator';
 import { AnalysisResult } from './types';
 import {promises as fs} from "fs";
