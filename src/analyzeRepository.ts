@@ -1,7 +1,7 @@
 import { AnalysisResult } from './types';
 import { getRepoFiles } from './utils/getRepoFiles';
-import { enrichRepoFilesWithCommitsInfo } from './utils/enrichRepoFilesWithCommitsInfo';
-import { getRepoFilesCommitRelations } from './utils/getRepoFilesCommitRelations';
+import { enrichRepoFilesWithCommitsInfo } from './utils/file-analysis/enrichRepoFilesWithCommitsInfo';
+import { getRepoFilesCommitRelations } from './utils/commit-relations/getRepoFilesCommitRelations';
 import { findRepoFilesStaticRelations } from './utils/findRepoFilesStaticRelations';
 
 export async function analyzeRepository(repoPath: string): Promise<AnalysisResult> {

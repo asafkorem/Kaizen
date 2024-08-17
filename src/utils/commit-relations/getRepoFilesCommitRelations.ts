@@ -1,7 +1,7 @@
 import { Worker } from 'worker_threads';
 import os from 'os';
 import path from 'path';
-import { FileRelation } from '../types';
+import { FileRelation } from '../../types';
 
 export async function getRepoFilesCommitRelations(repoPath: string, files: string[]): Promise<FileRelation[]> {
     const numWorkers = os.cpus().length;

@@ -1,7 +1,7 @@
 import { Worker } from 'worker_threads';
 import os from 'os';
 import path from 'path';
-import { FileCommit } from "../types";
+import { FileCommit } from "../../types";
 
 export async function enrichRepoFilesWithCommitsInfo(repoPath: string, files: string[]): Promise<FileCommit[]> {
     const numWorkers = os.cpus().length;
