@@ -39,6 +39,9 @@ git push origin "$new_version"
 # Publish the package to npm
 npm publish
 
+# Remove old archive
+rm -rf archive
+
 # Create the archive
 archive_name="archive/code-kaizen-${new_version:1}.tar.gz"
 git archive -o $archive_name HEAD
