@@ -32,7 +32,6 @@
   },
   "dependencies": {
     "commander": "^8.3.0",
-    "csv": "^6.0.5",
     "cytoscape": "^3.21.0",
     "madge": "^8.0.0",
     "node-nlp": "^4.27.0"

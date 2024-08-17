@@ -1,7 +1,7 @@
 import { analyzeRepository } from './analyzeRepository';
-import { generateCSVFiles } from './csvGenerator';
 import { AnalysisResult } from './types';
 import {promises as fs} from "fs";
+import {generateJSONFiles} from "./jsonGenerator";
 
 export async function runAnalysis(repoPath: string, artifactsPath: string) {
     try {
@@ -10,7 +10,7 @@ export async function runAnalysis(repoPath: string, artifactsPath: string) {
 
         console.log(`Artifacts will be stored in: ${artifactsPath}`);
         await fs.mkdir(artifactsPath, { recursive: true });
-        await generateCSVFiles(analysisResult, artifactsPath);
+        await generateJSONFiles(analysisResult, artifactsPath);
 
         console.log('Analysis completed successfully.');
 

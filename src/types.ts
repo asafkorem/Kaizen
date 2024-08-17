@@ -5,7 +5,13 @@ export interface FileCommit {
     fixCommits: number;
     featCommits: number;
     otherCommits: number;
+    authors: CommitAuthor[];
 }
+
+export type CommitAuthor = {
+    name: string;
+    count: number;
+};
 
 export interface FileRelation {
     file1: string;

@@ -1,4 +1,4 @@
-import { FileCommit } from '../types';
+import { FileCommit, CommitAuthor } from '../types';
 import { exec } from 'child_process';
 import { promisify } from 'util';
 import { classifyCommit } from "../model/classifyCommit";
@@ -12,11 +12,13 @@ export async function enrichRepoFilesWithCommitsInfo(repoPath: string, files: st
 async function analyzeFileCommits(repoPath: string, file: string): Promise<FileCommit> {
     const commits = await getFileCommits(repoPath, file);
     const linesOfCode = await getFileLinesOfCode(repoPath, file);
+    const authors = await getCommitAuthors(repoPath, file);
 
     return {
         fileName: file,
         linesOfCode,
         totalCommits: commits.length,
+        authors,
         ...await classifyCommits(commits)
     };
 }
@@ -41,4 +43,12 @@ async function classifyCommits(commits: { hash: string; message: string }[]): Pr
     const otherCommits = commitTypes.filter(ct => ct.categories.includes('others') || ct.categories.length == 0).length
 
     return { fixCommits, featCommits, otherCommits };
+}
+
+async function getCommitAuthors(repoPath: string, file: string): Promise<CommitAuthor[]> {
+    const { stdout } = await execAsync(`git log --follow --format="%aN" -- "${file}" | sort | uniq -c | sort -rn`, { cwd: repoPath });
+    return stdout.trim().split('\n').map(line => {
+        const [count, ...nameParts] = line.trim().split(' ');
+        return { name: nameParts.join(' '), count: parseInt(count, 10) };
+    });
 }
