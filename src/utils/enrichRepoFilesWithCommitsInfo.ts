@@ -1,6 +1,7 @@
 import { FileCommit } from '../types';
 import { exec } from 'child_process';
 import { promisify } from 'util';
+import { classifyCommit } from "../model/classifyCommit";
 
 const execAsync = promisify(exec);
 
@@ -16,8 +17,7 @@ async function analyzeFileCommits(repoPath: string, file: string): Promise<FileC
         fileName: file,
         linesOfCode,
         totalCommits: commits.length,
-        fixCommits: classifyCommits(commits, 'fix'),
-        enhancementCommits: classifyCommits(commits, ['feature', 'enhancement'])
+        ...await classifyCommits(commits)
     };
 }
 
@@ -34,9 +34,11 @@ async function getFileLinesOfCode(repoPath: string, file: string): Promise<numbe
     return parseInt(stdout.trim(), 10);
 }
 
-function classifyCommits(commits: { hash: string; message: string }[], keywords: string | string[]): number {
-    const keywordArray = Array.isArray(keywords) ? keywords : [keywords];
-    return commits.filter(commit =>
-        keywordArray.some(keyword => commit.message.toLowerCase().includes(keyword))
-    ).length;
+async function classifyCommits(commits: { hash: string; message: string }[]): Promise<{ fixCommits: number; featCommits: number; otherCommits: number }> {
+    const commitTypes = await Promise.all(commits.map(c => classifyCommit(c.message)));
+    const fixCommits = commitTypes.filter(ct => ct.categories.includes('fix')).length;
+    const featCommits = commitTypes.filter(ct => ct.categories.includes('feature')).length;
+    const otherCommits = commitTypes.filter(ct => ct.categories.includes('others') || ct.categories.length == 0).length
+
+    return { fixCommits, featCommits, otherCommits };
 }

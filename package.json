@@ -19,8 +19,8 @@
   },
   "scripts": {
     "start": "ts-node src/index.ts",
-    "build": "tsc && npm run copy-files",
-    "copy-files": "copyfiles -u 1 src/**/*.{csv,html,css,js} dist/"
+    "build": "tsc",
+    "train": "ts-node src/model/dev/trainModel.ts"
   },
   "devDependencies": {
     "@types/madge": "^5.0.3",
@@ -34,7 +34,8 @@
     "commander": "^8.3.0",
     "csv": "^6.0.5",
     "cytoscape": "^3.21.0",
-    "madge": "^8.0.0"
+    "madge": "^8.0.0",
+    "node-nlp": "^4.27.0"
   },
   "author": "Asaf Korem",
   "license": "MIT"

@@ -15,11 +15,12 @@ async function generateFileChangesCSV(fileCommits: AnalysisResult['fileCommits']
         fc.linesOfCode,
         fc.totalCommits,
         fc.fixCommits,
-        fc.enhancementCommits
+        fc.featCommits,
+        fc.otherCommits
     ]);
 
     const csv = stringify([
-        ['File Name', 'Lines of Code', 'Total Commits', 'Fix Commits', 'Enhancement Commits'],
+        ['File Name', 'Lines of Code', 'Total Commits', 'Fix Commits', 'Feature Commits', 'Other Commits'],
         ...csvData
     ]);
 
