@@ -15,7 +15,7 @@
   },
   "main": "dist/index.js",
   "bin": {
-    "kaizen": "dist/index.js"
+    "code-kaizen": "dist/index.js"
   },
   "scripts": {
     "start": "ts-node src/index.ts",
