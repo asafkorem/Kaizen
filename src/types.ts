@@ -3,8 +3,15 @@ export interface FileCommit {
     totalCommits: number;
     linesOfCode: number;
     fixCommits: number;
-    enhancementCommits: number;
+    featCommits: number;
+    otherCommits: number;
+    authors: CommitAuthor[];
 }
+
+export type CommitAuthor = {
+    name: string;
+    count: number;
+};
 
 export interface FileRelation {
     file1: string;
@@ -32,4 +39,14 @@ export interface CytoscapeEdge {
         target: string;
         weight: number;
     };
+}
+
+export interface CommitTypesTrainingData {
+    text: string;
+    categories: string[];
+}
+
+export interface CommitTypesClassificationResult {
+    categories: string[];
+    confidences: Record<string, number>;
 }
