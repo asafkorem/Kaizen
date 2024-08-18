@@ -1,8 +1,8 @@
 class CodeKaizen < Formula
   desc "Smart hot-spots detection in codebases"
   homepage "https://github.com/asafkorem/code-kaizen"
-  url "https://github.com/asafkorem/code-kaizen/archive/archive/code-kaizen-1.1.16.tar.gz"
-  sha256 "d86bd35738b16a72570e734dc399b748311cc74c6b8f3d5f1cee815f81b6748c"
+  url "https://github.com/asafkorem/code-kaizen/archive/archive/code-kaizen-1.1.17.tar.gz"
+  sha256 "b4154c4520743267757284bf7feda7ee8153e88261f9b71a5efc28eed41ecae9"
   license "MIT"
 
   def install
