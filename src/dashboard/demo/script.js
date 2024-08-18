@@ -191,40 +191,6 @@ function initTables() {
   });
 }
 
-function createTable(tableId) {
-  const table = document.getElementById(tableId);
-  table.innerHTML = '';
-  const thead = table.createTHead();
-  const headerRow = thead.insertRow();
-  getTableFields(tableId).forEach(field => {
-    const th = document.createElement('th');
-    th.textContent = field;
-    th.onclick = () => sortTable(tableId, field);
-    headerRow.appendChild(th);
-  });
-  table.createTBody();
-}
-
-function updateTable(tableId) {
-  const table = document.getElementById(tableId);
-  const tbody = table.tBodies[0];
-  tbody.innerHTML = '';
-
-  const startIndex = (tableData[tableId].currentPage - 1) * ROWS_PER_PAGE;
-  const endIndex = startIndex + ROWS_PER_PAGE;
-  const paginatedData = tableData[tableId].data.slice(startIndex, endIndex);
-
-  paginatedData.forEach(item => {
-    const row = tbody.insertRow();
-    getTableFields(tableId).forEach(field => {
-      const cell = row.insertCell();
-      cell.textContent = item[field];
-    });
-  });
-
-  updatePagination(tableId);
-}
-
 function updatePagination(tableId) {
   const container = document.getElementById(tableId).parentNode;
   let pagination = container.querySelector('.pagination');
@@ -311,6 +277,88 @@ function changePage(tableId, page) {
   updateTable(tableId);
 }
 
+function calculateImportsDependents() {
+  const importCounts = new Map();
+  const dependentCounts = new Map();
+
+  staticRelations.forEach(relation => {
+    importCounts.set(relation.dependentFile, (importCounts.get(relation.dependentFile) || 0) + 1);
+    dependentCounts.set(relation.dependencyFile, (dependentCounts.get(relation.dependencyFile) || 0) + 1);
+  });
+
+  return Array.from(new Set([...importCounts.keys(), ...dependentCounts.keys()]))
+  .map(file => ({
+    fileName: file,
+    imports: importCounts.get(file) || 0,
+    dependents: dependentCounts.get(file) || 0,
+    linesOfCode: fileChanges.find(f => f.fileName === file)?.linesOfCode || 0
+  }))
+  .sort((a, b) => (b.imports + b.dependents) - (a.imports + a.dependents));
+}
+
+function getTableFields(tableId) {
+  switch (tableId) {
+    case 'frequentlyChangedFiles':
+      return [
+        { key: 'fileName', label: 'File Name' },
+        { key: 'totalCommits', label: 'Total Commits' },
+        { key: 'fixCommits', label: 'Bug Fixes' },
+        { key: 'featCommits', label: 'New Features' },
+        { key: 'otherCommits', label: 'Other Changes' },
+        { key: 'linesOfCode', label: 'Lines of Code' }
+      ];
+    case 'mostImportsDependents':
+      return [
+        { key: 'fileName', label: 'File Name' },
+        { key: 'imports', label: 'Imports' },
+        { key: 'dependents', label: 'Dependents' },
+        { key: 'linesOfCode', label: 'Lines of Code' }
+      ];
+    case 'mostCoupledFiles':
+      return [
+        { key: 'file1', label: 'File 1' },
+        { key: 'file2', label: 'File 2' },
+        { key: 'sharedCommits', label: 'Shared Commits' }
+      ];
+    default:
+      return [];
+  }
+}
+
+function createTable(tableId) {
+  const table = document.getElementById(tableId);
+  table.innerHTML = '';
+  const thead = table.createTHead();
+  const headerRow = thead.insertRow();
+  getTableFields(tableId).forEach(field => {
+    const th = document.createElement('th');
+    th.textContent = field.label;
+    th.onclick = () => sortTable(tableId, field.key);
+    headerRow.appendChild(th);
+  });
+  table.createTBody();
+}
+
+function updateTable(tableId) {
+  const table = document.getElementById(tableId);
+  const tbody = table.tBodies[0];
+  tbody.innerHTML = '';
+
+  const startIndex = (tableData[tableId].currentPage - 1) * ROWS_PER_PAGE;
+  const endIndex = startIndex + ROWS_PER_PAGE;
+  const paginatedData = tableData[tableId].data.slice(startIndex, endIndex);
+
+  paginatedData.forEach(item => {
+    const row = tbody.insertRow();
+    getTableFields(tableId).forEach(field => {
+      const cell = row.insertCell();
+      cell.textContent = item[field.key];
+    });
+  });
+
+  updatePagination(tableId);
+}
+
 function sortTable(tableId, column) {
   const tableInfo = tableData[tableId];
   tableInfo.sortDirection = tableInfo.sortColumn === column && tableInfo.sortDirection === 'asc' ? 'desc' : 'asc';
@@ -334,38 +382,6 @@ function filterFiles() {
   );
   tableData.frequentlyChangedFiles.currentPage = 1;
   updateTable('frequentlyChangedFiles');
-}
-
-function calculateImportsDependents() {
-  const importCounts = new Map();
-  const dependentCounts = new Map();
-
-  staticRelations.forEach(relation => {
-    importCounts.set(relation.dependentFile, (importCounts.get(relation.dependentFile) || 0) + 1);
-    dependentCounts.set(relation.dependencyFile, (dependentCounts.get(relation.dependencyFile) || 0) + 1);
-  });
-
-  return Array.from(new Set([...importCounts.keys(), ...dependentCounts.keys()]))
-  .map(file => ({
-    fileName: file,
-    imports: importCounts.get(file) || 0,
-    dependents: dependentCounts.get(file) || 0,
-    linesOfCode: fileChanges.find(f => f.fileName === file)?.linesOfCode || 0
-  }))
-  .sort((a, b) => (b.imports + b.dependents) - (a.imports + a.dependents));
-}
-
-function getTableFields(tableId) {
-  switch (tableId) {
-    case 'frequentlyChangedFiles':
-      return ['fileName', 'totalCommits', 'fixCommits', 'featCommits', 'otherCommits', 'linesOfCode'];
-    case 'mostImportsDependents':
-      return ['fileName', 'imports', 'dependents', 'linesOfCode'];
-    case 'mostCoupledFiles':
-      return ['file1', 'file2', 'sharedCommits'];
-    default:
-      return [];
-  }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
