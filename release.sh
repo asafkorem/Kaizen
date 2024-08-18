@@ -46,8 +46,8 @@ rm -rf archive/code-kaizen-*.tar.gz
 archive_name="archive/code-kaizen-${new_version:1}.tar.gz"
 git archive -o $archive_name HEAD
 
-# Commit the archive
-git add $archive_name
+# Commit the archive dir changes
+git add archive
 git commit -m "Add archive for version $new_version"
 git push origin master
 
