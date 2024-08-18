@@ -5,6 +5,7 @@ const staticRelations = [{"dependentFile":"src/analyzeRepository.ts","dependency
 /* DO NOT REMOVE THIS */
 
 const ROWS_PER_PAGE = 10;
+const PAGINATION_ITEMS = 7;
 
 const tableData = {
   frequentlyChangedFiles: { data: fileChanges, currentPage: 1, sortColumn: null, sortDirection: 'asc' },
@@ -240,13 +241,60 @@ function updatePagination(tableId) {
   // Previous button
   addPaginationButton(pagination, '←', () => changePage(tableId, currentPage - 1), currentPage > 1);
 
-  // Page numbers
-  for (let i = 1; i <= totalPages; i++) {
-    addPaginationButton(pagination, i.toString(), () => changePage(tableId, i), true, i === currentPage);
-  }
+  const pageItems = getPageItems(currentPage, totalPages);
+  pageItems.forEach(item => {
+    if (item === '...') {
+      const ellipsis = document.createElement('span');
+      ellipsis.textContent = '...';
+      ellipsis.className = 'pagination-ellipsis';
+      ellipsis.setAttribute('aria-hidden', 'true');
+      pagination.appendChild(ellipsis);
+    } else {
+      addPaginationButton(pagination, item.toString(), () => changePage(tableId, item), true, item === currentPage);
+    }
+  });
 
   // Next button
   addPaginationButton(pagination, '→', () => changePage(tableId, currentPage + 1), currentPage < totalPages);
+}
+
+function getPageItems(currentPage, totalPages) {
+  if (totalPages <= PAGINATION_ITEMS - 2) { // -2 for prev and next buttons
+    return Array.from({length: totalPages}, (_, i) => i + 1);
+  }
+
+  let items = [];
+  const sideItems = Math.floor((PAGINATION_ITEMS - 3) / 2); // 3 = current + 2 ellipses
+  const leftLimit = sideItems + 1;
+  const rightLimit = totalPages - sideItems;
+
+  // Always include first page
+  items.push(1);
+
+  if (currentPage <= leftLimit) {
+    // Close to the start
+    items = items.concat(range(2, PAGINATION_ITEMS - 2));
+    items.push('...');
+    items.push(totalPages);
+  } else if (currentPage >= rightLimit) {
+    // Close to the end
+    items.push('...');
+    items = items.concat(range(totalPages - PAGINATION_ITEMS + 3, totalPages));
+  } else {
+    // Middle case
+    items.push('...');
+    const rangeStart = Math.max(currentPage - Math.floor(sideItems / 2), leftLimit);
+    const rangeEnd = Math.min(rangeStart + sideItems, rightLimit);
+    items = items.concat(range(rangeStart, rangeEnd));
+    items.push('...');
+    items.push(totalPages);
+  }
+
+  return items;
+}
+
+function range(start, end) {
+  return Array.from({length: end - start + 1}, (_, i) => start + i);
 }
 
 function addPaginationButton(container, text, onClick, enabled, isActive = false) {

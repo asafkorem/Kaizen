@@ -159,3 +159,10 @@ tr:hover {
     opacity: 0.5;
     cursor: not-allowed;
 }
+
+.pagination-ellipsis {
+    margin: 0 5px;
+    color: var(--text-secondary);
+    cursor: default;
+    user-select: none;
+}
