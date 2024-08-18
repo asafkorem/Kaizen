@@ -34,7 +34,7 @@ async function getFileLinesOfCode(repoPath, file) {
 
 async function classifyCommits(commits) {
   const classifiedCommits = await Promise.all(commits.map(commit => classifyCommit(commit.message)));
-  
+
   const fixCommits = classifiedCommits.filter(commit => commit.categories.includes('fix')).length;
   const featCommits = classifiedCommits.filter(commit => commit.categories.includes('feature')).length;
   const otherCommits = classifiedCommits.filter(commit => !commit.categories.includes('others') || commit.categories.includes('None')).length;
