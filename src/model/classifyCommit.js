@@ -1,11 +1,12 @@
 // @ts-nocheck
-import { NlpManager } from 'node-nlp';
-import { CommitTypesClassificationResult } from '../types';
+const { NlpManager } = require('node-nlp');
+const path = require('path');
 
-const MODEL_FILE = 'src/model/commit_classifier_model.nlp';
-let manager: NlpManager | null = null;
+const MODEL_FILE = path.join(__dirname, 'commit_classifier_model.nlp');
 
-async function loadModel(): Promise<NlpManager> {
+let manager = null;
+
+async function loadModel() {
     if (!manager) {
         manager = new NlpManager({ languages: ['en'] });
         await manager.load(MODEL_FILE);
@@ -13,7 +14,7 @@ async function loadModel(): Promise<NlpManager> {
     return manager;
 }
 
-export async function classifyCommit(commitMessage: string, threshold = 0.2): Promise<CommitTypesClassificationResult> {
+async function classifyCommit(commitMessage, threshold = 0.2) {
     const manager = await loadModel();
     const result = await manager.process('en', commitMessage);
 
@@ -29,3 +30,5 @@ export async function classifyCommit(commitMessage: string, threshold = 0.2): Pr
 
     return { categories, confidences };
 }
+
+module.exports = { classifyCommit };

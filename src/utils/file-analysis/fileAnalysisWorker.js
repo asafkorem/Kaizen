@@ -1,6 +1,7 @@
 const { parentPort, workerData } = require('worker_threads');
 const { exec } = require('child_process');
 const { promisify } = require('util');
+const { classifyCommit } = require('../../model/classifyCommit');
 
 const execAsync = promisify(exec);
 
@@ -32,9 +33,15 @@ async function getFileLinesOfCode(repoPath, file) {
 }
 
 async function classifyCommits(commits) {
-  // You'll need to implement this function or import it from another file
-  // For now, let's assume it returns a simple object
-  return { fixCommits: 0, featCommits: 0, otherCommits: commits.length };
+  const classifiedCommits = await Promise.all(commits.map(commit => classifyCommit(commit.message)));
+
+  console.log(classifiedCommits);
+
+  const fixCommits = classifiedCommits.filter(commit => commit.categories.includes('fix')).length;
+  const featCommits = classifiedCommits.filter(commit => commit.categories.includes('feature')).length;
+  const otherCommits = classifiedCommits.filter(commit => !commit.categories.includes('others') || commit.categories.includes('None')).length;
+
+  return { fixCommits, featCommits, otherCommits };
 }
 
 async function getCommitAuthors(repoPath, file) {
