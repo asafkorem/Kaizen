@@ -4,11 +4,19 @@ const staticRelations = [{"dependentFile":"src/analyzeRepository.ts","dependency
 
 /* DO NOT REMOVE THIS */
 
+const ROWS_PER_PAGE = 10;
+
+const tableData = {
+  frequentlyChangedFiles: { data: fileChanges, currentPage: 1, sortColumn: null, sortDirection: 'asc' },
+  mostImportsDependents: { data: [], currentPage: 1, sortColumn: null, sortDirection: 'asc' },
+  mostCoupledFiles: { data: commitRelations, currentPage: 1, sortColumn: null, sortDirection: 'asc' }
+};
+
 function initDashboard() {
   initCytoscape();
-  createCommitTypesChart();
-  createTopChangedFilesChart();
-  populateTables();
+  createCharts();
+  tableData.mostImportsDependents.data = calculateImportsDependents();
+  initTables();
 }
 
 function initCytoscape() {
@@ -87,14 +95,9 @@ function initCytoscape() {
 
 function calculateColor(file) {
   const total = file.totalCommits;
-  const fixes = file.fixCommits;
-  const enhancements = file.featCommits;
-  const others = file.otherCommits;
-
-  const r = Math.floor((fixes / total) * 255);
-  const g = Math.floor((enhancements / total) * 255);
-  const b = Math.floor((others / total) * 255);
-
+  const r = Math.floor((file.fixCommits / total) * 255);
+  const g = Math.floor((file.featCommits / total) * 255);
+  const b = Math.floor((file.otherCommits / total) * 255);
   return `rgb(${r},${g},${b})`;
 }
 
@@ -107,18 +110,25 @@ function calculateEdgeWeight(file1, file2) {
   return 1 + (sharedCommits / maxSharedCommits) * 9;
 }
 
+function createCharts() {
+  createCommitTypesChart();
+  createTopChangedFilesChart();
+}
+
 function createCommitTypesChart() {
-  const totalCommits = fileChanges.reduce((sum, file) => sum + file.totalCommits, 0);
-  const totalFixes = fileChanges.reduce((sum, file) => sum + file.fixCommits, 0);
-  const totalEnhancements = fileChanges.reduce((sum, file) => sum + file.featCommits, 0);
-  const otherCommits = fileChanges.reduce((sum, file) => sum + file.otherCommits, 0);
+  const commitTypes = fileChanges.reduce((acc, file) => {
+    acc.fixes += file.fixCommits;
+    acc.enhancements += file.featCommits;
+    acc.others += file.otherCommits;
+    return acc;
+  }, { fixes: 0, enhancements: 0, others: 0 });
 
   new Chart(document.getElementById('commitTypesChart').getContext('2d'), {
     type: 'pie',
     data: {
       labels: ['Fixes', 'Enhancements', 'Other'],
       datasets: [{
-        data: [totalFixes, totalEnhancements, otherCommits],
+        data: [commitTypes.fixes, commitTypes.enhancements, commitTypes.others],
         backgroundColor: ['#f85149', '#3fb950', '#58a6ff']
       }]
     },
@@ -166,46 +176,116 @@ function createTopChangedFilesChart() {
         }
       },
       scales: {
-        x: {
-          ticks: { color: '#c9d1d9' },
-          grid: { color: '#30363d' }
-        },
-        y: {
-          ticks: { color: '#c9d1d9' },
-          grid: { color: '#30363d' }
-        }
+        x: { ticks: { color: '#c9d1d9' }, grid: { color: '#30363d' } },
+        y: { ticks: { color: '#c9d1d9' }, grid: { color: '#30363d' } }
       }
     }
   });
 }
 
-function populateTables() {
-  populateTable('frequentlyChangedFiles', fileChanges, ['fileName', 'totalCommits', 'fixCommits', 'featCommits', 'otherCommits', 'linesOfCode']);
-  populateTable('mostImportsDependents', calculateImportsDependents(), ['fileName', 'imports', 'dependents', 'linesOfCode']);
-  populateTable('mostCoupledFiles', commitRelations, ['file1', 'file2', 'sharedCommits']);
+function initTables() {
+  ['frequentlyChangedFiles', 'mostImportsDependents', 'mostCoupledFiles'].forEach(tableId => {
+    createTable(tableId);
+    updateTable(tableId);
+  });
 }
 
-function populateTable(tableId, data, fields) {
+function createTable(tableId) {
   const table = document.getElementById(tableId);
   table.innerHTML = '';
-
   const thead = table.createTHead();
   const headerRow = thead.insertRow();
-  fields.forEach((field, index) => {
+  getTableFields(tableId).forEach(field => {
     const th = document.createElement('th');
     th.textContent = field;
-    th.onclick = () => sortTable(tableId, index);
+    th.onclick = () => sortTable(tableId, field);
     headerRow.appendChild(th);
   });
+  table.createTBody();
+}
 
-  const tbody = table.createTBody();
-  data.forEach(item => {
+function updateTable(tableId) {
+  const table = document.getElementById(tableId);
+  const tbody = table.tBodies[0];
+  tbody.innerHTML = '';
+
+  const startIndex = (tableData[tableId].currentPage - 1) * ROWS_PER_PAGE;
+  const endIndex = startIndex + ROWS_PER_PAGE;
+  const paginatedData = tableData[tableId].data.slice(startIndex, endIndex);
+
+  paginatedData.forEach(item => {
     const row = tbody.insertRow();
-    fields.forEach(field => {
+    getTableFields(tableId).forEach(field => {
       const cell = row.insertCell();
       cell.textContent = item[field];
     });
   });
+
+  updatePagination(tableId);
+}
+
+function updatePagination(tableId) {
+  const container = document.getElementById(tableId).parentNode;
+  let pagination = container.querySelector('.pagination');
+  if (!pagination) {
+    pagination = document.createElement('div');
+    pagination.className = 'pagination';
+    container.appendChild(pagination);
+  }
+  pagination.innerHTML = '';
+
+  const totalPages = Math.ceil(tableData[tableId].data.length / ROWS_PER_PAGE);
+  const currentPage = tableData[tableId].currentPage;
+
+  // Previous button
+  addPaginationButton(pagination, '←', () => changePage(tableId, currentPage - 1), currentPage > 1);
+
+  // Page numbers
+  for (let i = 1; i <= totalPages; i++) {
+    addPaginationButton(pagination, i.toString(), () => changePage(tableId, i), true, i === currentPage);
+  }
+
+  // Next button
+  addPaginationButton(pagination, '→', () => changePage(tableId, currentPage + 1), currentPage < totalPages);
+}
+
+function addPaginationButton(container, text, onClick, enabled, isActive = false) {
+  const button = document.createElement('button');
+  button.textContent = text;
+  button.onclick = onClick;
+  button.disabled = !enabled;
+  if (isActive) button.classList.add('active');
+  container.appendChild(button);
+}
+
+function changePage(tableId, page) {
+  tableData[tableId].currentPage = page;
+  updateTable(tableId);
+}
+
+function sortTable(tableId, column) {
+  const tableInfo = tableData[tableId];
+  tableInfo.sortDirection = tableInfo.sortColumn === column && tableInfo.sortDirection === 'asc' ? 'desc' : 'asc';
+  tableInfo.sortColumn = column;
+
+  tableInfo.data.sort((a, b) => {
+    const aValue = a[column];
+    const bValue = b[column];
+    const comparison = isNaN(aValue) ? aValue.localeCompare(bValue) : aValue - bValue;
+    return tableInfo.sortDirection === 'asc' ? comparison : -comparison;
+  });
+
+  tableInfo.currentPage = 1;
+  updateTable(tableId);
+}
+
+function filterFiles() {
+  const filter = document.getElementById('fileSearchBox').value.toUpperCase();
+  tableData.frequentlyChangedFiles.data = fileChanges.filter(file =>
+    file.fileName.toUpperCase().includes(filter)
+  );
+  tableData.frequentlyChangedFiles.currentPage = 1;
+  updateTable('frequentlyChangedFiles');
 }
 
 function calculateImportsDependents() {
@@ -222,39 +302,26 @@ function calculateImportsDependents() {
     fileName: file,
     imports: importCounts.get(file) || 0,
     dependents: dependentCounts.get(file) || 0,
-    linesOfCode: fileChanges.find(f => f.fileName === file).linesOfCode
+    linesOfCode: fileChanges.find(f => f.fileName === file)?.linesOfCode || 0
   }))
-  .sort((a, b) => (b.imports + b.dependents) - (a.imports + a.dependents))
-  .slice(0, 10);
+  .sort((a, b) => (b.imports + b.dependents) - (a.imports + a.dependents));
 }
 
-function sortTable(tableId, columnIndex) {
-  const table = document.getElementById(tableId);
-  const tbody = table.tBodies[0];
-  const rows = Array.from(tbody.rows);
-
-  rows.sort((a, b) => {
-    const aValue = a.cells[columnIndex].textContent;
-    const bValue = b.cells[columnIndex].textContent;
-    return isNaN(aValue) ? aValue.localeCompare(bValue) : Number(bValue) - Number(aValue);
-  });
-
-  rows.forEach(row => tbody.appendChild(row));
-}
-
-function filterFiles() {
-  const filter = document.getElementById('fileSearchBox').value.toUpperCase();
-  const table = document.getElementById('frequentlyChangedFiles');
-  const rows = table.getElementsByTagName('tr');
-
-  for (let i = 1; i < rows.length; i++) {
-    const cellText = rows[i].cells[0].textContent || rows[i].cells[0].innerText;
-    rows[i].style.display = cellText.toUpperCase().indexOf(filter) > -1 ? '' : 'none';
+function getTableFields(tableId) {
+  switch (tableId) {
+    case 'frequentlyChangedFiles':
+      return ['fileName', 'totalCommits', 'fixCommits', 'featCommits', 'otherCommits', 'linesOfCode'];
+    case 'mostImportsDependents':
+      return ['fileName', 'imports', 'dependents', 'linesOfCode'];
+    case 'mostCoupledFiles':
+      return ['file1', 'file2', 'sharedCommits'];
+    default:
+      return [];
   }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
   initDashboard();
-  document.getElementById('fileSearchBox').addEventListener('keyup', filterFiles);
-  console.log('Dashboard initialized successfully');
+  document.getElementById('fileSearchBox').addEventListener('input', filterFiles);
 });
+
