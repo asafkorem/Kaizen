@@ -187,8 +187,50 @@ function createTopChangedFilesChart() {
 function initTables() {
   ['frequentlyChangedFiles', 'mostImportsDependents', 'mostCoupledFiles'].forEach(tableId => {
     createTable(tableId);
+    createSearchBar(tableId);
     updateTable(tableId);
   });
+}
+
+function createSearchBar(tableId) {
+  const container = document.getElementById(tableId).parentNode;
+  const searchBar = document.createElement('input');
+  searchBar.type = 'text';
+  searchBar.placeholder = 'Filter table...';
+  searchBar.className = 'table-search';
+  searchBar.addEventListener('input', () => filterTable(tableId));
+  container.insertBefore(searchBar, container.firstChild);
+}
+
+function filterTable(tableId) {
+  const searchTerm = document.querySelector(`#${tableId}`).parentNode.querySelector('.table-search').value.toLowerCase();
+  tableData[tableId].filteredData = tableData[tableId].data.filter(item =>
+    Object.values(item).some(val =>
+      val.toString().toLowerCase().includes(searchTerm)
+    )
+  );
+  tableData[tableId].currentPage = 1;
+  updateTable(tableId);
+}
+
+function updateTable(tableId) {
+  const table = document.getElementById(tableId);
+  const tbody = table.tBodies[0];
+  tbody.innerHTML = '';
+
+  const startIndex = (tableData[tableId].currentPage - 1) * ROWS_PER_PAGE;
+  const endIndex = startIndex + ROWS_PER_PAGE;
+  const paginatedData = (tableData[tableId].filteredData || tableData[tableId].data).slice(startIndex, endIndex);
+
+  paginatedData.forEach(item => {
+    const row = tbody.insertRow();
+    getTableFields(tableId).forEach(field => {
+      const cell = row.insertCell();
+      cell.textContent = item[field.key];
+    });
+  });
+
+  updatePagination(tableId);
 }
 
 function updatePagination(tableId) {
@@ -201,7 +243,8 @@ function updatePagination(tableId) {
   }
   pagination.innerHTML = '';
 
-  const totalPages = Math.ceil(tableData[tableId].data.length / ROWS_PER_PAGE);
+  const totalPages = Math.ceil((tableData[tableId].filteredData || tableData[tableId].data).length / ROWS_PER_PAGE);
+
   const currentPage = tableData[tableId].currentPage;
 
   // Previous button
@@ -339,26 +382,6 @@ function createTable(tableId) {
   table.createTBody();
 }
 
-function updateTable(tableId) {
-  const table = document.getElementById(tableId);
-  const tbody = table.tBodies[0];
-  tbody.innerHTML = '';
-
-  const startIndex = (tableData[tableId].currentPage - 1) * ROWS_PER_PAGE;
-  const endIndex = startIndex + ROWS_PER_PAGE;
-  const paginatedData = tableData[tableId].data.slice(startIndex, endIndex);
-
-  paginatedData.forEach(item => {
-    const row = tbody.insertRow();
-    getTableFields(tableId).forEach(field => {
-      const cell = row.insertCell();
-      cell.textContent = item[field.key];
-    });
-  });
-
-  updatePagination(tableId);
-}
-
 function sortTable(tableId, column) {
   const tableInfo = tableData[tableId];
   tableInfo.sortDirection = tableInfo.sortColumn === column && tableInfo.sortDirection === 'asc' ? 'desc' : 'asc';
@@ -376,16 +399,10 @@ function sortTable(tableId, column) {
 }
 
 function filterFiles() {
-  const filter = document.getElementById('fileSearchBox').value.toUpperCase();
-  tableData.frequentlyChangedFiles.data = fileChanges.filter(file =>
-    file.fileName.toUpperCase().includes(filter)
-  );
-  tableData.frequentlyChangedFiles.currentPage = 1;
-  updateTable('frequentlyChangedFiles');
+  ['frequentlyChangedFiles', 'mostImportsDependents', 'mostCoupledFiles'].forEach(filterTable);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
   initDashboard();
-  document.getElementById('fileSearchBox').addEventListener('input', filterFiles);
 });
 
