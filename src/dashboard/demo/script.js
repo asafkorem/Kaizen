@@ -8,9 +8,9 @@ const ROWS_PER_PAGE = 10;
 const PAGINATION_ITEMS = 7;
 
 const tableData = {
-  frequentlyChangedFiles: { data: fileChanges, currentPage: 1, sortColumn: null, sortDirection: 'asc' },
-  mostImportsDependents: { data: [], currentPage: 1, sortColumn: null, sortDirection: 'asc' },
-  mostCoupledFiles: { data: commitRelations, currentPage: 1, sortColumn: null, sortDirection: 'asc' }
+  frequentlyChangedFiles: { data: fileChanges, currentPage: 1, sortColumn: null, sortDirection: 'asc', filterType: 'string' },
+  mostImportsDependents: { data: [], currentPage: 1, sortColumn: null, sortDirection: 'asc', filterType: 'string' },
+  mostCoupledFiles: { data: commitRelations, currentPage: 1, sortColumn: null, sortDirection: 'asc', filterType: 'string' }
 };
 
 function initDashboard() {
@@ -187,8 +187,88 @@ function createTopChangedFilesChart() {
 function initTables() {
   ['frequentlyChangedFiles', 'mostImportsDependents', 'mostCoupledFiles'].forEach(tableId => {
     createTable(tableId);
+    createSearchBar(tableId);
     updateTable(tableId);
   });
+}
+
+function createSearchBar(tableId) {
+  const container = document.getElementById(tableId).parentNode;
+  const searchContainer = document.createElement('div');
+  searchContainer.className = 'search-container';
+
+  const searchBar = document.createElement('input');
+  searchBar.type = 'text';
+  searchBar.placeholder = 'Filter by string...';
+  searchBar.className = 'table-search';
+  searchBar.addEventListener('input', () => filterTable(tableId));
+
+  const toggleButton = document.createElement('button');
+  toggleButton.textContent = 'Use Regex';
+  toggleButton.className = 'filter-toggle-btn';
+  toggleButton.addEventListener('click', () => toggleFilterType(tableId));
+
+  searchContainer.appendChild(searchBar);
+  searchContainer.appendChild(toggleButton);
+  container.insertBefore(searchContainer, container.firstChild);
+}
+
+function toggleFilterType(tableId) {
+  const tableInfo = tableData[tableId];
+  tableInfo.filterType = tableInfo.filterType === 'string' ? 'regex' : 'string';
+  const toggleButton = document.getElementById(tableId).parentNode.querySelector('.filter-toggle-btn');
+  toggleButton.textContent = tableInfo.filterType === 'string' ? 'Use Regex' : 'Use String';
+  const searchBar = document.getElementById(tableId).parentNode.querySelector('.table-search');
+  searchBar.placeholder = `Filter by ${tableInfo.filterType}...`;
+  filterTable(tableId);
+}
+
+function filterTable(tableId) {
+  const searchTerm = document.querySelector(`#${tableId}`).parentNode.querySelector('.table-search').value;
+  const tableInfo = tableData[tableId];
+
+  if (tableInfo.filterType === 'string') {
+    tableInfo.filteredData = tableInfo.data.filter(item =>
+      Object.values(item).some(val =>
+        val.toString().toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    );
+  } else {
+    try {
+      const regex = new RegExp(searchTerm, 'i');
+      tableInfo.filteredData = tableInfo.data.filter(item =>
+        Object.values(item).some(val =>
+          regex.test(val.toString())
+        )
+      );
+    } catch (e) {
+      // Invalid regex, return all data
+      tableInfo.filteredData = tableInfo.data;
+    }
+  }
+
+  tableInfo.currentPage = 1;
+  updateTable(tableId);
+}
+
+function updateTable(tableId) {
+  const table = document.getElementById(tableId);
+  const tbody = table.tBodies[0];
+  tbody.innerHTML = '';
+
+  const startIndex = (tableData[tableId].currentPage - 1) * ROWS_PER_PAGE;
+  const endIndex = startIndex + ROWS_PER_PAGE;
+  const paginatedData = (tableData[tableId].filteredData || tableData[tableId].data).slice(startIndex, endIndex);
+
+  paginatedData.forEach(item => {
+    const row = tbody.insertRow();
+    getTableFields(tableId).forEach(field => {
+      const cell = row.insertCell();
+      cell.textContent = item[field.key];
+    });
+  });
+
+  updatePagination(tableId);
 }
 
 function updatePagination(tableId) {
@@ -201,7 +281,8 @@ function updatePagination(tableId) {
   }
   pagination.innerHTML = '';
 
-  const totalPages = Math.ceil(tableData[tableId].data.length / ROWS_PER_PAGE);
+  const totalPages = Math.ceil((tableData[tableId].filteredData || tableData[tableId].data).length / ROWS_PER_PAGE);
+
   const currentPage = tableData[tableId].currentPage;
 
   // Previous button
@@ -339,26 +420,6 @@ function createTable(tableId) {
   table.createTBody();
 }
 
-function updateTable(tableId) {
-  const table = document.getElementById(tableId);
-  const tbody = table.tBodies[0];
-  tbody.innerHTML = '';
-
-  const startIndex = (tableData[tableId].currentPage - 1) * ROWS_PER_PAGE;
-  const endIndex = startIndex + ROWS_PER_PAGE;
-  const paginatedData = tableData[tableId].data.slice(startIndex, endIndex);
-
-  paginatedData.forEach(item => {
-    const row = tbody.insertRow();
-    getTableFields(tableId).forEach(field => {
-      const cell = row.insertCell();
-      cell.textContent = item[field.key];
-    });
-  });
-
-  updatePagination(tableId);
-}
-
 function sortTable(tableId, column) {
   const tableInfo = tableData[tableId];
   tableInfo.sortDirection = tableInfo.sortColumn === column && tableInfo.sortDirection === 'asc' ? 'desc' : 'asc';
@@ -376,16 +437,10 @@ function sortTable(tableId, column) {
 }
 
 function filterFiles() {
-  const filter = document.getElementById('fileSearchBox').value.toUpperCase();
-  tableData.frequentlyChangedFiles.data = fileChanges.filter(file =>
-    file.fileName.toUpperCase().includes(filter)
-  );
-  tableData.frequentlyChangedFiles.currentPage = 1;
-  updateTable('frequentlyChangedFiles');
+  ['frequentlyChangedFiles', 'mostImportsDependents', 'mostCoupledFiles'].forEach(filterTable);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
   initDashboard();
-  document.getElementById('fileSearchBox').addEventListener('input', filterFiles);
 });
 

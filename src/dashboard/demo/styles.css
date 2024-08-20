@@ -116,21 +116,28 @@ tr:hover {
     display: none;
 }
 
-#fileSearchBox {
-    width: 100%;
+/* New styles for the table search bars */
+.table-search {
+    flex-grow: 1;
+
+    width: calc(100% - 24px);
+    /* typical font for search */
+    font-family: 'Arial', sans-serif;
     padding: 12px;
-    margin-bottom: 15px;
-    background-color: var(--bg-secondary);
-    border: 1px solid var(--border-color);
+    background: transparent;
+    border: none;
     color: var(--text-primary);
-    border-radius: 6px;
     font-size: 16px;
-    transition: border-color 0.3s ease;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-#fileSearchBox:focus {
+
+.table-search:focus {
     outline: none;
-    border-color: var(--accent-color);
+}
+
+.table-search::placeholder {
+    color: var(--text-secondary);
 }
 
 .pagination {
@@ -169,4 +176,24 @@ tr:hover {
     color: var(--text-secondary);
     cursor: default;
     user-select: none;
+}
+
+.filter-toggle-btn {
+    margin: 10px;
+    font-size: 12px;
+    width: 100px;
+    padding: 7px;
+    background-color: #21262d;
+    border: 1px solid #30363d;
+    color: #c9d1d9;
+    cursor: pointer;
+    border-radius: 6px;
+    align-self: center;
+}
+.filter-toggle-btn:hover {
+    background-color: #30363d;
+}
+.search-container {
+    display: flex;
+    align-items: center;
 }
