@@ -197,3 +197,30 @@ tr:hover {
     display: flex;
     align-items: center;
 }
+
+.histogram-container {
+    margin-bottom: 20px;
+}
+
+.histogram-controls {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+#changeTypeFilter, #resetZoom {
+    padding: 8px 12px;
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#changeTypeFilter:hover, #resetZoom:hover {
+    background-color: var(--hover-color);
+}
+
+#fileCommitHistogram {
+    height: 400px;
+}

@@ -18,6 +18,101 @@ function initDashboard() {
   createCharts();
   tableData.mostImportsDependents.data = calculateImportsDependents();
   initTables();
+  createFileCommitHistogram();
+}
+
+function createFileCommitHistogram() {
+  const ctx = document.getElementById('fileCommitHistogram').getContext('2d');
+  const sortedFiles = fileChanges.sort((a, b) => b.totalCommits - a.totalCommits);
+  const labels = sortedFiles.map(file => file.fileName);
+  const data = sortedFiles.map(file => file.totalCommits);
+
+  window.fileCommitHistogram = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Total Commits',
+        data: data,
+        backgroundColor: '#58a6ff'
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        x: {
+          ticks: { color: '#c9d1d9' },
+          grid: { color: '#30363d' }
+        },
+        y: {
+          ticks: { color: '#c9d1d9' },
+          grid: { color: '#30363d' }
+        }
+      },
+      plugins: {
+        legend: {
+          labels: { color: '#c9d1d9' }
+        },
+        zoom: {
+          zoom: {
+            wheel: {
+              enabled: true,
+            },
+            pinch: {
+              enabled: true
+            },
+            mode: 'xy',
+          },
+          pan: {
+            enabled: true,
+            mode: 'xy',
+          }
+        }
+      }
+    }
+  });
+
+  // Add event listeners for change type filter and reset zoom
+  document.getElementById('changeTypeFilter').addEventListener('change', updateHistogram);
+  document.getElementById('resetZoom').addEventListener('click', resetHistogramZoom);
+}
+
+function updateHistogram() {
+  const changeType = document.getElementById('changeTypeFilter').value;
+  const sortedFiles = fileChanges.sort((a, b) => {
+    const aValue = changeType === 'all' ? a.totalCommits :
+      changeType === 'fix' ? a.fixCommits :
+        changeType === 'feat' ? a.featCommits :
+          a.otherCommits;
+    const bValue = changeType === 'all' ? b.totalCommits :
+      changeType === 'fix' ? b.fixCommits :
+        changeType === 'feat' ? b.featCommits :
+          b.otherCommits;
+    return bValue - aValue;
+  });
+
+  const labels = sortedFiles.map(file => file.fileName);
+  const data = sortedFiles.map(file => {
+    switch(changeType) {
+      case 'all': return file.totalCommits;
+      case 'fix': return file.fixCommits;
+      case 'feat': return file.featCommits;
+      case 'other': return file.otherCommits;
+    }
+  });
+
+  window.fileCommitHistogram.data.labels = labels;
+  window.fileCommitHistogram.data.datasets[0].data = data;
+  window.fileCommitHistogram.data.datasets[0].label = changeType === 'all' ? 'Total Commits' :
+    changeType === 'fix' ? 'Bug Fixes' :
+      changeType === 'feat' ? 'New Features' :
+        'Other Changes';
+  window.fileCommitHistogram.update();
+}
+
+function resetHistogramZoom() {
+  window.fileCommitHistogram.resetZoom();
 }
 
 function initCytoscape() {

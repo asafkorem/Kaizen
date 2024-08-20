@@ -7,8 +7,6 @@
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.21.0/cytoscape.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
-    <script src="script.js"></script>
 </head>
 <body>
 <div class="container">
@@ -24,6 +22,22 @@
         </div>
         <div class="chart">
             <canvas id="topChangedFilesChart"></canvas>
+        </div>
+    </div>
+
+    <h2>File Commit Histogram</h2>
+    <div class="histogram-container">
+        <div class="histogram-controls">
+            <select id="changeTypeFilter">
+                <option value="all">All Changes</option>
+                <option value="fix">Bug Fixes</option>
+                <option value="feat">New Features</option>
+                <option value="other">Other Changes</option>
+            </select>
+            <button id="resetZoom">Reset Zoom</button>
+        </div>
+        <div class="chart">
+            <canvas id="fileCommitHistogram"></canvas>
         </div>
     </div>
 
@@ -45,5 +59,6 @@
 
 <div id="errorMessage"></div>
 
+<script src="script.js"></script>
 </body>
 </html>
