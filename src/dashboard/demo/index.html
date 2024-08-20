@@ -6,6 +6,7 @@
     <title>Kaizen Dashboard</title>
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.21.0/cytoscape.min.js"></script>
+    <script src="path/to/chartjs-plugin-zoom/dist/chartjs-plugin-zoom.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
@@ -35,6 +36,10 @@
                 <option value="other">Other Changes</option>
             </select>
             <button id="resetZoom">Reset Zoom</button>
+        </div>
+        <div class="zoom-instructions">
+            <p>To zoom: Click and drag on the chart to select an area, or use the mouse wheel/pinch gesture.</p>
+            <p>To pan: Click and drag on the chart while zoomed in.</p>
         </div>
         <div class="chart">
             <canvas id="fileCommitHistogram"></canvas>

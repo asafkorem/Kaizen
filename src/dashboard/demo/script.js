@@ -40,10 +40,11 @@ function createFileCommitHistogram() {
     options: {
       responsive: true,
       maintainAspectRatio: false,
+
       scales: {
         x: {
           ticks: { color: '#c9d1d9' },
-          grid: { color: '#30363d' }
+          grid: { color: '#30363d' },
         },
         y: {
           ticks: { color: '#c9d1d9' },
@@ -57,16 +58,15 @@ function createFileCommitHistogram() {
         zoom: {
           zoom: {
             wheel: {
-              enabled: true,
+              enabled: true // SET SCROOL ZOOM TO TRUE
             },
-            pinch: {
-              enabled: true
-            },
-            mode: 'xy',
+            mode: "xy",
+            speed: 100
           },
           pan: {
             enabled: true,
-            mode: 'xy',
+            mode: "xy",
+            speed: 100
           }
         }
       }
