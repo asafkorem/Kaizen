@@ -176,3 +176,16 @@ tr:hover {
     cursor: default;
     user-select: none;
 }
+
+.filter-toggle-btn {
+    margin-left: 10px;
+    padding: 5px 10px;
+    background-color: #21262d;
+    border: 1px solid #30363d;
+    color: #c9d1d9;
+    cursor: pointer;
+    border-radius: 6px;
+}
+.filter-toggle-btn:hover {
+    background-color: #30363d;
+}
