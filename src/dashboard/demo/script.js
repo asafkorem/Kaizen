@@ -188,28 +188,29 @@ function initTables() {
   ['frequentlyChangedFiles', 'mostImportsDependents', 'mostCoupledFiles'].forEach(tableId => {
     createTable(tableId);
     createSearchBar(tableId);
-    createFilterTypeToggle(tableId);
     updateTable(tableId);
   });
 }
 
 function createSearchBar(tableId) {
   const container = document.getElementById(tableId).parentNode;
+  const searchContainer = document.createElement('div');
+  searchContainer.className = 'search-container';
+
   const searchBar = document.createElement('input');
   searchBar.type = 'text';
   searchBar.placeholder = 'Filter by string...';
   searchBar.className = 'table-search';
   searchBar.addEventListener('input', () => filterTable(tableId));
-  container.insertBefore(searchBar, container.firstChild);
-}
 
-function createFilterTypeToggle(tableId) {
-  const container = document.getElementById(tableId).parentNode;
   const toggleButton = document.createElement('button');
   toggleButton.textContent = 'Use Regex';
   toggleButton.className = 'filter-toggle-btn';
   toggleButton.addEventListener('click', () => toggleFilterType(tableId));
-  container.insertBefore(toggleButton, container.firstChild.nextSibling);
+
+  searchContainer.appendChild(searchBar);
+  searchContainer.appendChild(toggleButton);
+  container.insertBefore(searchContainer, container.firstChild);
 }
 
 function toggleFilterType(tableId) {
