@@ -10,6 +10,10 @@ Kaizen (改善, "continuous improvement" in Japanese) is a powerful code analysi
 
 By leveraging Git history and static analysis, Kaizen provides actionable insights to guide your refactoring efforts and improve code quality.
 
+## Demo
+
+You can check out the live demo at [https://asafkorem.github.io/Kaizen/](https://asafkorem.github.io/Kaizen/).
+
 ## Usage
 
 ### Project Requirements
