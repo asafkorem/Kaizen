@@ -224,16 +224,3 @@ tr:hover {
 #fileCommitHistogram {
     height: 400px;
 }
-.zoom-instructions {
-    margin-bottom: 10px;
-    padding: 10px;
-    background-color: var(--bg-secondary);
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-}
-
-.zoom-instructions p {
-    margin: 5px 0;
-    font-size: 14px;
-    color: var(--text-secondary);
-}
