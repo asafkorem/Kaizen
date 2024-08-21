@@ -6,13 +6,15 @@ export async function generateDashboard(analysisResult: AnalysisResult, artifact
     const templateDirPath = path.join(__dirname, 'demo');
 
     const dashboardDirPath = path.join(artifactsPath, 'dashboard');
-    
+
     await fs.mkdir(dashboardDirPath, { recursive: true });
 
     const dashboardPath = path.join(dashboardDirPath, 'index.html');
     await fs.copyFile(path.join(templateDirPath, 'index.html'), dashboardPath);
 
     await fs.copyFile(path.join(templateDirPath, 'styles.css'), path.join(dashboardDirPath, 'styles.css'));
+
+    await fs.copyFile(path.join(templateDirPath, 'chartjs-plugin-zoom.min.js'), path.join(dashboardDirPath, 'chartjs-plugin-zoom.min.js'));
 
     await changeAnalysisResultsAndCopyJSTemplate(
         analysisResult,
