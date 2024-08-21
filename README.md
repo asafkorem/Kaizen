@@ -2,6 +2,8 @@
 <img src="https://github.com/asafkorem/Kaizen/blob/master/logo.png" alt="Kaizen logo" width="200"/>
 </p>
 
+# Code Kaizen
+
 ## Smart hot-spots detection
 
 Kaizen (改善, "continuous improvement" in Japanese) is a powerful code analysis tool designed to identify and visualize hot-spots in your codebase.
